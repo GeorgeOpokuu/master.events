@@ -1,0 +1,408 @@
+import { create } from "zustand";
+import { DEMO_ORG_EVENTS } from "../constants/data";
+
+const useStore = create((set, get) => ({
+  // ── Navigation ──────────────────────────────────────────────
+  screen: "onboarding",
+  activeTab: "home",
+  setScreen: (screen) => set({ screen }),
+  setActiveTab: (activeTab) => set({ activeTab }),
+
+  // ── Auth ────────────────────────────────────────────────────
+  currentUser: null,
+  role: null,
+  isLoggedIn: false,
+  email: "",
+  password: "",
+  loginError: "",
+  signupData: {},
+  fullName: "",
+  signupEmail: "",
+  signupPassword: "",
+  setEmail: (email) => set({ email }),
+  setPassword: (password) => set({ password }),
+  setFullName: (fullName) => set({ fullName }),
+  setSignupEmail: (signupEmail) => set({ signupEmail }),
+  setSignupPassword: (signupPassword) => set({ signupPassword }),
+  setSignupData: (signupData) => set({ signupData }),
+
+  handleLogin: async () => {
+    const { authAPI } = await import('../api');
+    const { email, password } = get();
+    set({ loginError: "" });
+    try {
+      const data = await authAPI.login({ email, password });
+      if (data.tokens) {
+        localStorage.setItem("access_token", data.tokens.access);
+        localStorage.setItem("refresh_token", data.tokens.refresh);
+        const user = data.user;
+        const firstTab = user.role === "organizer" ? "dashboard" : "home";
+        set({
+          currentUser: user,
+          role: user.role,
+          screen: "app",
+          activeTab: firstTab,
+          isLoggedIn: true,
+          loginError: "",
+        });
+        if (user.role === "organizer") {
+          set({ orgEvents: DEMO_ORG_EVENTS.map(e => ({ ...e })) });
+        }
+      } else {
+        set({ loginError: data.detail || "Invalid email or password" });
+      }
+    } catch (e) {
+      set({ loginError: "Connection error. Is the server running?" });
+    }
+  },
+
+  handleSignup: async () => {
+    const { authAPI } = await import('../api');
+    const { fullName, signupEmail, signupPassword, signupData } = get();
+    const nameParts = fullName.trim().split(" ");
+    const first_name = nameParts[0] || "";
+    const last_name = nameParts.slice(1).join(" ") || "";
+    set({ signupError: "" });
+    if (!fullName || !signupEmail || !signupPassword) {
+      set({ signupError: "Please fill all fields" });
+      return;
+    }
+    try {
+      const data = await authAPI.register({
+        first_name,
+        last_name,
+        email: signupEmail,
+        password: signupPassword,
+        phone: signupData.phone || "",
+        role: signupData.role || "attendee",
+      });
+      if (data.tokens) {
+        localStorage.setItem("access_token", data.tokens.access);
+        localStorage.setItem("refresh_token", data.tokens.refresh);
+        const user = data.user;
+        const firstTab = user.role === "organizer" ? "dashboard" : "home";
+        set({
+          currentUser: user,
+          role: user.role,
+          screen: "app",
+          activeTab: firstTab,
+          isLoggedIn: true,
+        });
+      } else {
+        set({ signupError: data.email?.[0] || data.password?.[0] || "Registration failed" });
+      }
+    } catch (e) {
+      set({ signupError: "Connection error. Is the server running?" });
+    }
+  },
+
+  handleSelectRole: (role) => {
+    const firstTab = role === "organizer" ? "dashboard" : "home";
+    set({ role, screen: "app", activeTab: firstTab });
+  },
+
+  handleLogout: () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    set({
+      screen: "login", currentUser: null, role: null,
+      isLoggedIn: false, menuOpen: false,
+      email: "", password: "", loginError: "", activeTab: "home",
+      overlayEvent: null, checkoutEvent: null,
+      doorStaffUser: null, doorCode: "", doorCodeError: "",
+      doorStaffInvites: {},
+    });
+  },
+
+  // ── Onboarding ──────────────────────────────────────────────
+  onboardSlide: 0,
+  setOnboardSlide: (onboardSlide) => set({ onboardSlide }),
+
+  // ── UI ──────────────────────────────────────────────────────
+  menuOpen: false,
+  setMenuOpen: (menuOpen) => set({ menuOpen }),
+
+  // ── Events / Search ─────────────────────────────────────────
+  searchQ: "",
+  setSearchQ: (searchQ) => set({ searchQ }),
+  overlayEvent: null,
+  setOverlayEvent: (overlayEvent) => set({ overlayEvent }),
+
+  // ── Tickets ─────────────────────────────────────────────────
+  myTickets: [],
+  resaleListings: [],
+  checkoutEvent: null,
+  ticketQty: 1,
+  payMethod: "momo",
+  viewingTicket: null,
+  setCheckoutEvent: (checkoutEvent) => set({ checkoutEvent }),
+  setTicketQty: (ticketQty) => set({ ticketQty }),
+  setPayMethod: (payMethod) => set({ payMethod }),
+  setViewingTicket: (viewingTicket) => set({ viewingTicket }),
+
+  handleBuyTicket: async () => {
+    const { ticketsAPI } = await import('../api');
+    const { checkoutEvent, ticketQty, payMethod, myTickets } = get();
+    try {
+      const reference = "PAY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+      const data = await ticketsAPI.purchase({
+        event_id: checkoutEvent.id,
+        quantity: ticketQty,
+        payment_reference: reference,
+      });
+      if (data.ticket_id) {
+        const ticket = {
+          id: data.ticket_id,
+          event: checkoutEvent,
+          qty: ticketQty,
+          payMethod,
+          purchasedAt: new Date().toLocaleDateString(),
+          owner: data.owner?.first_name + " " + data.owner?.last_name,
+          ownerEmail: data.owner?.email,
+          status: "active",
+          qr_data: data.qr_data,
+          qr_base64: data.qr_base64,
+        };
+        set({
+          myTickets: [...myTickets, ticket],
+          checkoutEvent: null,
+          overlayEvent: null,
+          activeTab: "tickets",
+          screen: "ticketView",
+          viewingTicket: ticket,
+        });
+      } else {
+        alert(data.error || "Purchase failed. Try again.");
+      }
+    } catch (e) {
+      alert("Connection error. Is the server running?");
+    }
+  },
+
+  // ── Resale ───────────────────────────────────────────────────
+  resaleTicket: null,
+  resalePrice: "",
+  resaleError: "",
+  setResaleTicket: (resaleTicket) => set({ resaleTicket }),
+  setResalePrice: (resalePrice) => set({ resalePrice }),
+  setResaleError: (resaleError) => set({ resaleError }),
+
+  handleListForResale: () => {
+    const { resaleTicket, resalePrice, myTickets, resaleListings, currentUser } = get();
+    const price = parseFloat(resalePrice);
+    const orig = resaleTicket.event.price;
+    if (!price || isNaN(price)) { set({ resaleError: "Please enter a valid price." }); return; }
+    if (price >= orig) { set({ resaleError: `Must be less than original price (Ghc ${orig}).` }); return; }
+    if (price < orig * 0.3) { set({ resaleError: `Minimum resale price: Ghc ${Math.floor(orig * 0.3)}.` }); return; }
+    set({
+      myTickets: myTickets.map(t => t.id === resaleTicket.id ? { ...t, status: "resale", resalePrice: price } : t),
+      resaleListings: [...resaleListings, { ...resaleTicket, resalePrice: price, listedAt: new Date().toLocaleDateString(), seller: currentUser.name }],
+      resaleTicket: null, resalePrice: "", resaleError: "", screen: "resaleSuccess",
+    });
+  },
+
+  handleCancelResale: (ticketId) => {
+    const { myTickets, resaleListings } = get();
+    set({
+      myTickets: myTickets.map(t => t.id === ticketId ? { ...t, status: "active", resalePrice: null } : t),
+      resaleListings: resaleListings.filter(l => l.id !== ticketId),
+    });
+  },
+
+  // ── Transfer ─────────────────────────────────────────────────
+  transferTicket: null,
+  transferEmail: "",
+  transferName: "",
+  transferDone: false,
+  setTransferTicket: (transferTicket) => set({ transferTicket }),
+  setTransferEmail: (transferEmail) => set({ transferEmail }),
+  setTransferName: (transferName) => set({ transferName }),
+  setTransferDone: (transferDone) => set({ transferDone }),
+
+  handleTransfer: async () => {
+    const { ticketsAPI } = await import('../api');
+    const { transferEmail, transferTicket, myTickets } = get();
+    if (!transferEmail) { alert("Please enter recipient email."); return; }
+    try {
+      const data = await ticketsAPI.transfer({
+        ticket_id: transferTicket.id,
+        to_email: transferEmail,
+      });
+      if (data.message) {
+        set({
+          myTickets: myTickets.filter(t => t.id !== transferTicket.id),
+          transferDone: true,
+        });
+      } else {
+        alert(data.error || "Transfer failed.");
+      }
+    } catch (e) {
+      alert("Connection error.");
+    }
+  },
+
+  // ── Organizer ────────────────────────────────────────────────
+  orgEvents: [],
+  viewingOrgEvent: null,
+  addEventForm: { name: "", subtitle: "", date: "", time: "", venue: "", price: "", description: "" },
+  setOrgEvents: (orgEvents) => set({ orgEvents }),
+  setViewingOrgEvent: (viewingOrgEvent) => set({ viewingOrgEvent }),
+  setAddEventForm: (addEventForm) => set({ addEventForm }),
+
+  handleAddEvent: async () => {
+    const { eventsAPI } = await import('../api');
+    const { addEventForm, orgEvents } = get();
+    if (!addEventForm.name || !addEventForm.date || !addEventForm.price) {
+      alert("Please fill Event Name, Date and Price");
+      return;
+    }
+    try {
+      const data = await eventsAPI.create({
+        name: addEventForm.name,
+        description: addEventForm.description || "",
+        category: addEventForm.category || "other",
+        venue: addEventForm.venue || "",
+        city: addEventForm.city || "Accra",
+        date: addEventForm.date,
+        time: addEventForm.time || "20:00:00",
+        price: addEventForm.price,
+        total_tickets: addEventForm.totalTickets || 100,
+      });
+      if (data.id) {
+        set({
+          orgEvents: [...orgEvents, {
+            id: data.id,
+            name: data.name,
+            date: data.date,
+            venue: data.venue,
+            price: parseFloat(data.price),
+            totalTickets: data.total_tickets,
+            ticketsSold: data.tickets_sold,
+            salesOpen: data.sales_open,
+            color: "#f5a623",
+          }],
+          addEventForm: { name: "", subtitle: "", date: "", time: "", venue: "", price: "", description: "" },
+          screen: "app", activeTab: "events",
+        });
+      } else {
+        alert(data.error || "Failed to create event.");
+      }
+    } catch (e) {
+      alert("Connection error.");
+    }
+  },
+
+  toggleSales: async (eventId) => {
+    const { eventsAPI } = await import('../api');
+    const { orgEvents, viewingOrgEvent } = get();
+    try {
+      const data = await eventsAPI.toggleSales(eventId);
+      const updated = orgEvents.map(e => e.id === eventId ? { ...e, salesOpen: data.sales_open } : e);
+      const updatedEvent = updated.find(e => e.id === eventId);
+      set({ orgEvents: updated, viewingOrgEvent: updatedEvent });
+    } catch (e) {
+      const updated = orgEvents.map(e => e.id === eventId ? { ...e, salesOpen: !e.salesOpen } : e);
+      set({ orgEvents: updated });
+    }
+  },
+
+  // ── Door Staff ───────────────────────────────────────────────
+  doorStaffInvites: {},
+  doorStaffUser: null,
+  doorCode: "",
+  doorCodeError: "",
+  setDoorCode: (doorCode) => set({ doorCode: doorCode.toUpperCase(), doorCodeError: "" }),
+  setDoorCodeError: (doorCodeError) => set({ doorCodeError }),
+
+  generateDoorCode: async (eventId, eventName) => {
+    const { ticketsAPI } = await import('../api');
+    try {
+      const data = await ticketsAPI.generateDoorCode(eventId);
+      if (data.code) {
+        const invite = { code: data.code, eventId, eventName, used: false, createdAt: new Date().toLocaleTimeString() };
+        set(state => ({
+          doorStaffInvites: {
+            ...state.doorStaffInvites,
+            [eventId]: [...(state.doorStaffInvites[eventId] || []), invite],
+          },
+        }));
+      }
+    } catch (e) {
+      // fallback to local code generation
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+      const code = `DOOR-${rand}`;
+      const invite = { code, eventId, eventName, used: false, createdAt: new Date().toLocaleTimeString() };
+      set(state => ({
+        doorStaffInvites: {
+          ...state.doorStaffInvites,
+          [eventId]: [...(state.doorStaffInvites[eventId] || []), invite],
+        },
+      }));
+    }
+  },
+
+  handleDoorStaffLogin: async () => {
+    const { ticketsAPI } = await import('../api');
+    const { doorCode, doorStaffInvites } = get();
+    const trimmed = doorCode.trim().toUpperCase();
+    try {
+      const data = await ticketsAPI.doorStaffLogin(trimmed);
+      if (data.valid) {
+        set({
+          doorStaffUser: { code: trimmed, eventId: data.event_id, eventName: data.event_name, name: "Door Staff" },
+          admittedList: [], scanInput: "", scanResult: null,
+          screen: "doorStaffScan",
+          doorCodeError: "",
+        });
+        return;
+      }
+    } catch (e) {}
+    // fallback to local check
+    let found = null;
+    Object.values(doorStaffInvites).forEach(invites => {
+      invites.forEach(inv => { if (inv.code === trimmed) found = inv; });
+    });
+    if (!found) { set({ doorCodeError: "Invalid code. Ask your organizer for a valid door staff code." }); return; }
+    if (found.used) { set({ doorCodeError: "This code has already been used. Ask for a new one." }); return; }
+    set(state => {
+      const updated = { ...state.doorStaffInvites };
+      updated[found.eventId] = updated[found.eventId].map(inv =>
+        inv.code === trimmed ? { ...inv, used: true } : inv
+      );
+      return {
+        doorStaffInvites: updated,
+        doorStaffUser: { code: trimmed, eventId: found.eventId, eventName: found.eventName, name: "Door Staff" },
+        admittedList: [], scanInput: "", scanResult: null,
+        screen: "doorStaffScan",
+      };
+    });
+  },
+
+  // ── Scanner ──────────────────────────────────────────────────
+  scanInput: "",
+  scanResult: null,
+  verifying: false,
+  admittedList: [],
+  setScanInput: (scanInput) => set({ scanInput, scanResult: null }),
+  setScanResult: (scanResult) => set({ scanResult }),
+  setVerifying: (verifying) => set({ verifying }),
+  setAdmittedList: (admittedList) => set({ admittedList }),
+
+  handleAdmit: (isDoorStaff = false) => {
+    const { scanResult, admittedList, orgEvents, doorStaffUser } = get();
+    if (!scanResult?.ticket) return;
+    const newList = [...admittedList, scanResult.ticket.tokenId];
+    const updates = { admittedList: newList, scanInput: "", scanResult: null };
+    if (isDoorStaff && doorStaffUser?.eventId) {
+      updates.orgEvents = orgEvents.map(ev =>
+        ev.id === doorStaffUser.eventId
+          ? { ...ev, admittedCount: (ev.admittedCount || 0) + 1 }
+          : ev
+      );
+    }
+    set(updates);
+  },
+}));
+
+export default useStore;
