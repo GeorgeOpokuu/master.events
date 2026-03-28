@@ -1,5 +1,4 @@
-const BASE_URL = "http://172.20.10.7:8000/api";
-
+const BASE_URL = "https://master-events-backend.onrender.com/api";
 const getToken = () => localStorage.getItem("access_token");
 
 const headers = () => ({
