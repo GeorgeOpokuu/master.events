@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { DEMO_ORG_EVENTS } from "../constants/data";
 
+// Keep backend alive - ping every 14 minutes
+setInterval(() => {
+  fetch('https://master-events-backend.onrender.com/api/events/')
+    .catch(() => {});
+}, 840000);
+
 const useStore = create((set, get) => ({
   // ── Navigation ──────────────────────────────────────────────
   screen: "onboarding",
@@ -52,7 +58,7 @@ const useStore = create((set, get) => ({
         set({ loginError: data.detail || "Invalid email or password" });
       }
     } catch (e) {
-      set({ loginError: "Connection error. Is the server running?" });
+      set({ loginError: "Connection error. Please try again." });
     }
   },
 
@@ -92,7 +98,7 @@ const useStore = create((set, get) => ({
         set({ signupError: data.email?.[0] || data.password?.[0] || "Registration failed" });
       }
     } catch (e) {
-      set({ signupError: "Connection error. Is the server running?" });
+      set({ signupError: "Connection error. Please try again." });
     }
   },
 
@@ -175,7 +181,7 @@ const useStore = create((set, get) => ({
         alert(data.error || "Purchase failed. Try again.");
       }
     } catch (e) {
-      alert("Connection error. Is the server running?");
+      alert("Connection error. Please try again.");
     }
   },
 
@@ -328,7 +334,6 @@ const useStore = create((set, get) => ({
         }));
       }
     } catch (e) {
-      // fallback to local code generation
       const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
       const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
       const code = `DOOR-${rand}`;
@@ -358,7 +363,6 @@ const useStore = create((set, get) => ({
         return;
       }
     } catch (e) {}
-    // fallback to local check
     let found = null;
     Object.values(doorStaffInvites).forEach(invites => {
       invites.forEach(inv => { if (inv.code === trimmed) found = inv; });
