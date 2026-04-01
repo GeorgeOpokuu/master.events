@@ -1,132 +1,162 @@
 import React, { useEffect, useState } from "react";
 
 function LandingPage() {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    fetch("https://master-events-backend.onrender.com/api/events/")
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setEvents(data.slice(0, 8)); })
+      .catch(() => {});
+  }, []);
+
+  const categoryImages = {
+    music: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600",
+    tech: "https://images.unsplash.com/photo-1488229297570-58520851e868?w=600",
+    food: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600",
+    arts: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600",
+    sports: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600",
+    business: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600",
+    other: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600",
+  };
+
   return (
-    <div style={{
-      minHeight: "100vh", background: "#0a0600", color: "#fff",
-      fontFamily: "sans-serif", overflowX: "hidden",
-    }}>
-      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 60px", borderBottom: "1px solid rgba(245,166,35,0.1)" }}>
+    <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", color: "#1a1a1a" }}>
+
+      {/* Nav */}
+      <nav style={{ background: "#fff", borderBottom: "1px solid #f0f0f0", padding: "0 60px", display: "flex", justifyContent: "space-between", alignItems: "center", height: "64px", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "28px" }}>🎟️</span>
-          <span style={{ fontWeight: 900, fontSize: "20px", color: "#f5a623" }}>Master Events</span>
+          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎟️</div>
+          <span style={{ fontWeight: 800, fontSize: "18px", color: "#1a1a1a", letterSpacing: "-0.3px" }}>Master Events</span>
         </div>
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
-          <a href="#features" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", fontSize: "14px" }}>Features</a>
-          <a href="#how" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", fontSize: "14px" }}>How it Works</a>
-          <a href="#organizers" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none", fontSize: "14px" }}>Organizers</a>
-          <a href="https://master-events-bi7m.vercel.app" style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "50px", textDecoration: "none", fontWeight: 700, fontSize: "14px" }}>Open App</a>
+          <a href="#events" style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>Events</a>
+          <a href="#organizers" style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>Organizers</a>
+          <a href="#about" style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>About</a>
+          <a href="/login" onClick={e => { e.preventDefault(); window.location.reload(); }} style={{ color: "#1a1a1a", textDecoration: "none", fontSize: "14px", fontWeight: 600 }}>Log in</a>
+          <a href="/signup" onClick={e => { e.preventDefault(); window.location.reload(); }} style={{ padding: "10px 22px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "12px", textDecoration: "none", fontWeight: 700, fontSize: "14px", boxShadow: "0 4px 12px rgba(245,166,35,0.3)" }}>Sign up free</a>
         </div>
       </nav>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "80px 60px", maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ flex: 1, maxWidth: "560px" }}>
-          <div style={{ display: "inline-block", background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.3)", borderRadius: "50px", padding: "6px 16px", fontSize: "12px", color: "#f5a623", fontWeight: 700, letterSpacing: "2px", marginBottom: "24px" }}>
-            🇬🇭 GHANA'S PREMIER TICKETING PLATFORM
-          </div>
-          <h1 style={{ fontSize: "64px", fontWeight: 900, lineHeight: 1.1, marginBottom: "24px" }}>
-            If Not Now,<br />
-            <span style={{ background: "linear-gradient(135deg, #f5a623, #ff6b00)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>When?</span>
-          </h1>
-          <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: "40px" }}>
-            Buy, sell and transfer event tickets secured by blockchain technology. Every ticket is an NFT on Polygon — unfakeable, verifiable, yours forever.
-          </p>
-          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-            <a href="https://master-events-bi7m.vercel.app" style={{ padding: "16px 32px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "50px", textDecoration: "none", fontWeight: 800, fontSize: "16px", boxShadow: "0 8px 32px rgba(245,166,35,0.4)" }}>🎟️ Get Tickets</a>
-            <a href="#organizers" style={{ padding: "16px 32px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", borderRadius: "50px", textDecoration: "none", fontWeight: 700, fontSize: "16px" }}>🎪 Create Event</a>
-          </div>
-          <div style={{ display: "flex", gap: "32px", marginTop: "48px" }}>
-            {[["10K+", "Tickets Sold"], ["50+", "Events"], ["99%", "Verified"], ["0%", "Fake Tickets"]].map(([val, label]) => (
-              <div key={label}>
-                <div style={{ fontSize: "24px", fontWeight: 900, color: "#f5a623" }}>{val}</div>
-                <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>{label}</div>
-              </div>
-            ))}
-          </div>
+
+      {/* Hero */}
+      <div style={{ background: "linear-gradient(135deg, #fff8f0 0%, #fff 100%)", padding: "80px 60px 60px", textAlign: "center", borderBottom: "1px solid #f0f0f0" }}>
+        <div style={{ display: "inline-block", background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "50px", padding: "6px 18px", fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "24px" }}>
+          🇬🇭 GHANA'S PREMIER TICKETING PLATFORM
         </div>
-        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
-          <div style={{ position: "absolute", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(245,166,35,0.15) 0%, transparent 70%)", borderRadius: "50%" }} />
-          <div style={{ width: "280px", height: "580px", background: "linear-gradient(160deg, #1a0e00, #110900)", borderRadius: "40px", boxShadow: "0 0 0 2px #555, 0 0 0 10px #1a1a1a, 0 0 0 12px #444, 0 40px 80px rgba(0,0,0,0.8)", overflow: "hidden", position: "relative", zIndex: 1 }}>
-            <div style={{ background: "rgba(245,166,35,0.1)", padding: "40px 20px", textAlign: "center", borderBottom: "1px solid rgba(245,166,35,0.1)" }}>
-              <div style={{ fontSize: "40px", marginBottom: "8px" }}>🎟️</div>
-              <div style={{ fontWeight: 900, fontSize: "18px", color: "#f5a623" }}>Master Events</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", letterSpacing: "2px" }}>IF NOT NOW, WHEN?</div>
-            </div>
-            <div style={{ padding: "16px" }}>
-              {["Afrobeats Carnival", "Tech Summit Ghana", "Accra Jazz Night"].map((name, i) => (
-                <div key={name} style={{ background: "rgba(255,255,255,0.05)", borderRadius: "12px", padding: "12px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: `hsl(${i * 40 + 20}, 70%, 40%)`, flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>{name}</div>
-                    <div style={{ fontSize: "10px", color: "#f5a623" }}>🎫 Tickets Available</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        <h1 style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1.1, marginBottom: "20px", letterSpacing: "-1px" }}>
+          Find events that<br />
+          <span style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>move you</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#6b6b6b", maxWidth: "480px", margin: "0 auto 40px", lineHeight: 1.6 }}>
+          Discover and buy tickets to the best events in Ghana. Every ticket is an NFT — unfakeable and yours forever.
+        </p>
+        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="#events" style={{ padding: "16px 36px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "14px", textDecoration: "none", fontWeight: 700, fontSize: "16px", boxShadow: "0 8px 24px rgba(245,166,35,0.35)" }}>
+            🎟️ Browse Events
+          </a>
+          <a href="#organizers" style={{ padding: "16px 36px", background: "#fff", border: "1.5px solid #f0f0f0", color: "#1a1a1a", borderRadius: "14px", textDecoration: "none", fontWeight: 700, fontSize: "16px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
+            🎪 Create Event
+          </a>
         </div>
-      </div>
-      <div id="features" style={{ padding: "80px 60px", background: "rgba(245,166,35,0.03)", borderTop: "1px solid rgba(245,166,35,0.08)" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
-            <h2 style={{ fontSize: "42px", fontWeight: 900, marginBottom: "16px" }}>Why Master Events?</h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "16px" }}>Built for Ghana, secured by blockchain</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
-            {[
-              { icon: "⛓️", title: "NFT Tickets", desc: "Every ticket is a real NFT on Polygon blockchain. Impossible to fake, easy to verify." },
-              { icon: "📱", title: "MoMo Payments", desc: "Pay with MTN MoMo or VISA. Instant confirmation, automatic wallet split." },
-              { icon: "🔍", title: "QR Verification", desc: "Door staff scan QR codes instantly. Real-time blockchain verification." },
-              { icon: "💸", title: "95% to Organizers", desc: "Keep 95% of every ticket sale. Withdraw to MoMo anytime." },
-              { icon: "🔄", title: "Ticket Transfer", desc: "Transfer tickets to friends securely. Full blockchain transfer history." },
-              { icon: "🏷️", title: "Resale Market", desc: "List tickets for resale at fair prices. Platform takes just 5%." },
-            ].map(f => (
-              <div key={f.title} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(245,166,35,0.1)", borderRadius: "20px", padding: "32px" }}>
-                <div style={{ fontSize: "36px", marginBottom: "16px" }}>{f.icon}</div>
-                <div style={{ fontWeight: 800, fontSize: "18px", marginBottom: "8px" }}>{f.title}</div>
-                <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", lineHeight: 1.7 }}>{f.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div id="how" style={{ padding: "80px 60px", maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ fontSize: "42px", fontWeight: 900, textAlign: "center", marginBottom: "60px" }}>How It Works</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
-          {[
-            { step: "01", icon: "🔍", title: "Browse Events", desc: "Find events happening across Ghana" },
-            { step: "02", icon: "💳", title: "Buy Ticket", desc: "Pay with MoMo or VISA securely" },
-            { step: "03", icon: "🎟️", title: "Get NFT", desc: "Ticket minted to blockchain instantly" },
-            { step: "04", icon: "✅", title: "Show & Scan", desc: "Scan QR at door for instant entry" },
-          ].map(s => (
-            <div key={s.step} style={{ textAlign: "center" }}>
-              <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "24px" }}>{s.icon}</div>
-              <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, letterSpacing: "2px", marginBottom: "8px" }}>STEP {s.step}</div>
-              <div style={{ fontWeight: 800, fontSize: "16px", marginBottom: "8px" }}>{s.title}</div>
-              <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>{s.desc}</div>
+
+        {/* Stats */}
+        <div style={{ display: "flex", gap: "48px", justifyContent: "center", marginTop: "60px" }}>
+          {[["10K+", "Tickets Sold"], ["50+", "Events"], ["99%", "Verified"], ["0%", "Fakes"]].map(([val, label]) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: "28px", fontWeight: 900, color: "#f5a623" }}>{val}</div>
+              <div style={{ fontSize: "13px", color: "#aaa", marginTop: "4px" }}>{label}</div>
             </div>
           ))}
         </div>
       </div>
-      <div id="organizers" style={{ padding: "80px 60px", background: "linear-gradient(135deg, rgba(245,166,35,0.1), rgba(245,166,35,0.05))", borderTop: "1px solid rgba(245,166,35,0.15)", borderBottom: "1px solid rgba(245,166,35,0.15)" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ fontSize: "42px", fontWeight: 900, marginBottom: "16px" }}>Are You an Event Organizer?</h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px", lineHeight: 1.8, marginBottom: "40px" }}>
-            Create events, manage ticket sales, generate door staff codes and withdraw earnings directly to your MoMo — all from one dashboard.
-          </p>
-          <a href="https://master-events-bi7m.vercel.app" style={{ padding: "18px 48px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "50px", textDecoration: "none", fontWeight: 800, fontSize: "18px", boxShadow: "0 8px 32px rgba(245,166,35,0.4)", display: "inline-block" }}>
-            🎪 Start Selling Tickets
-          </a>
+
+      {/* Events grid */}
+      <div id="events" style={{ padding: "60px 60px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+          <div>
+            <h2 style={{ fontSize: "32px", fontWeight: 800, letterSpacing: "-0.5px", marginBottom: "6px" }}>Upcoming Events</h2>
+            <p style={{ color: "#aaa", fontSize: "15px" }}>Discover what's happening across Ghana</p>
+          </div>
+          <a href="#" onClick={e => { e.preventDefault(); window.location.reload(); }} style={{ color: "#f5a623", fontWeight: 700, fontSize: "14px", textDecoration: "none" }}>See all →</a>
+        </div>
+
+        {/* 4-column grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px" }}>
+          {(events.length > 0 ? events : Array(8).fill(null)).map((ev, i) => (
+            <div key={i} style={{ background: "#fff", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.07)", cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.12)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.07)"; }}>
+              <div style={{ height: "160px", position: "relative", background: "#f0f0f0" }}>
+                <img
+                  src={ev?.image || categoryImages[ev?.category] || `https://images.unsplash.com/photo-149268422306${i}-81342ee5ff30?w=600`}
+                  alt={ev?.name || "Event"}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  onError={e => { e.target.src = categoryImages.other; }}
+                />
+                {!ev && <div className="skeleton" style={{ position: "absolute", inset: 0 }} />}
+                {ev && <div style={{ position: "absolute", top: "10px", left: "10px", background: "#f5a623", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 8px", borderRadius: "20px" }}>{ev.category}</div>}
+              </div>
+              <div style={{ padding: "14px" }}>
+                {ev ? (
+                  <>
+                    <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "6px", lineHeight: 1.3 }}>{ev.name}</div>
+                    <div style={{ fontSize: "12px", color: "#aaa", marginBottom: "10px" }}>📅 {ev.date} · 📍 {ev.venue}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontWeight: 800, color: "#f5a623", fontSize: "15px" }}>{parseFloat(ev.price) === 0 ? "FREE" : `Ghc ${ev.price}`}</span>
+                      <span style={{ fontSize: "11px", color: "#aaa" }}>{ev.total_tickets - ev.tickets_sold} left</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="skeleton" style={{ height: "14px", width: "80%", marginBottom: "8px" }} />
+                    <div className="skeleton" style={{ height: "12px", width: "60%", marginBottom: "10px" }} />
+                    <div className="skeleton" style={{ height: "14px", width: "40%" }} />
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-      <div style={{ padding: "40px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "20px" }}>🎟️</span>
-          <span style={{ fontWeight: 900, color: "#f5a623" }}>Master Events</span>
+
+      {/* Organizer CTA */}
+      <div id="organizers" style={{ margin: "0 60px 60px", background: "linear-gradient(135deg, #fff8f0, #fff)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "24px", padding: "60px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 24px rgba(245,166,35,0.08)" }}>
+        <div style={{ maxWidth: "520px" }}>
+          <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>🎪 FOR ORGANIZERS</div>
+          <h2 style={{ fontSize: "36px", fontWeight: 800, marginBottom: "16px", letterSpacing: "-0.5px", lineHeight: 1.2 }}>Ready to host your event?</h2>
+          <p style={{ color: "#6b6b6b", fontSize: "16px", lineHeight: 1.7, marginBottom: "28px" }}>
+            Create events, sell tickets with blockchain verification, manage door staff, and receive 95% of every sale directly to your MoMo wallet.
+          </p>
+          <div style={{ display: "flex", gap: "12px" }}>
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload(); }} style={{ padding: "14px 28px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "14px", textDecoration: "none", fontWeight: 700, fontSize: "15px", boxShadow: "0 6px 20px rgba(245,166,35,0.3)" }}>
+              Start Selling Tickets
+            </a>
+            <a href="#" onClick={e => { e.preventDefault(); }} style={{ padding: "14px 28px", background: "#fff", border: "1.5px solid #f0f0f0", color: "#1a1a1a", borderRadius: "14px", textDecoration: "none", fontWeight: 600, fontSize: "15px" }}>
+              Learn More
+            </a>
+          </div>
         </div>
-        <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "13px" }}>© 2026 Master Events Ghana. Secured by Polygon Blockchain.</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", flexShrink: 0 }}>
+          {[["95%", "Payout to Organizers"], ["⛓️", "NFT Tickets"], ["📱", "MoMo Payments"], ["🔍", "QR Verification"]].map(([icon, label]) => (
+            <div key={label} style={{ background: "#fff", borderRadius: "16px", padding: "20px 16px", textAlign: "center", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", width: "130px" }}>
+              <div style={{ fontSize: "28px", marginBottom: "8px" }}>{icon}</div>
+              <div style={{ fontSize: "12px", fontWeight: 600, color: "#6b6b6b", lineHeight: 1.3 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div id="about" style={{ background: "#fff", borderTop: "1px solid #f0f0f0", padding: "32px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>🎟️</div>
+          <span style={{ fontWeight: 700, color: "#1a1a1a", fontSize: "14px" }}>Master Events</span>
+        </div>
+        <div style={{ color: "#bbb", fontSize: "13px" }}>© 2026 Master Events Ghana · Secured by Polygon Blockchain</div>
         <div style={{ display: "flex", gap: "24px" }}>
-          <a href="mailto:mastereventgh@gmail.com" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none", fontSize: "13px" }}>Contact</a>
-          <a href="#" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none", fontSize: "13px" }}>Privacy</a>
+          <a href="mailto:mastereventgh@gmail.com" style={{ color: "#aaa", textDecoration: "none", fontSize: "13px" }}>Contact</a>
+          <a href="#" style={{ color: "#aaa", textDecoration: "none", fontSize: "13px" }}>Privacy</a>
+          <a href="#" style={{ color: "#aaa", textDecoration: "none", fontSize: "13px" }}>Terms</a>
         </div>
       </div>
     </div>
@@ -145,24 +175,10 @@ export default function PhoneFrame({ children }) {
     return (
       <>
         <style>{`
-          @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-          @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
           * { box-sizing: border-box; margin: 0; padding: 0; }
-          ::-webkit-scrollbar { display: none; }
-          html, body, #root { height: 100%; width: 100%; overflow: hidden; background: #110900; }
+          html, body, #root { height: 100%; width: 100%; overflow: hidden; background: #f8f8f6; }
         `}</style>
-        <div style={{
-          width: "100%", height: "100vh",
-          background: "linear-gradient(160deg, #1a0e00 0%, #110900 60%, #1a0e00 100%)",
-          display: "flex", flexDirection: "column",
-          fontFamily: "sans-serif", overflow: "hidden", position: "relative",
-        }}>
-          <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-            backgroundImage: `
-              radial-gradient(ellipse at 20% 20%, rgba(245,166,35,0.07) 0%, transparent 50%),
-              radial-gradient(ellipse at 80% 80%, rgba(245,166,35,0.05) 0%, transparent 50%)
-            `,
-          }} />
+        <div style={{ width: "100%", height: "100vh", background: "#f8f8f6", display: "flex", flexDirection: "column", fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif", overflow: "hidden", position: "relative" }}>
           <div style={{ flex: 1, overflowY: "auto", position: "relative", zIndex: 1, display: "flex", flexDirection: "column" }}>
             {children}
           </div>
@@ -176,8 +192,10 @@ export default function PhoneFrame({ children }) {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0600; }
+        ::-webkit-scrollbar-track { background: #f8f8f6; }
         ::-webkit-scrollbar-thumb { background: #f5a623; border-radius: 3px; }
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
       `}</style>
       <LandingPage />
     </>

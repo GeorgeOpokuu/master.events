@@ -33,15 +33,25 @@ function AppTabs() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ flex: 1, overflowY: "auto" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#f8f8f6" }}>
+      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
         {renderTab()}
       </div>
+      {/* Floating + button for organizer */}
       {role === "organizer" && (
-  <div onClick={() => setScreen("addEvent")}
-    style={{ position: "fixed", bottom: "90px", right: "16px", width: "52px", height: "52px", borderRadius: "50%", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", cursor: "pointer", boxShadow: "0 4px 20px rgba(245,166,35,0.5)", color: "#fff", zIndex: 50 }}>
-    +
-  </div> 
+        <div
+          onClick={() => setScreen("addEvent")}
+          style={{
+            position: "fixed", bottom: "100px", right: "20px",
+            width: "52px", height: "52px", borderRadius: "50%",
+            background: "linear-gradient(135deg, #f5a623, #e8920f)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "28px", cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(245,166,35,0.5)",
+            color: "#fff", zIndex: 200,
+          }}>
+          +
+        </div>
       )}
       <BottomNav />
     </div>
@@ -50,11 +60,17 @@ function AppTabs() {
 
 function AppContent() {
   const screen = useStore(s => s.screen);
-  const routes = {
+
+  const fullScreenRoutes = {
     onboarding:     <Onboarding />,
     login:          <Login />,
     signup:         <Signup />,
     role:           <RoleSelect />,
+    doorStaffLogin: <DoorStaffLogin />,
+    doorStaffScan:  <DoorStaffScan />,
+  };
+
+  const appRoutes = {
     app:            <AppTabs />,
     checkout:       <Checkout />,
     ticketView:     <TicketView />,
@@ -64,12 +80,16 @@ function AppContent() {
     addEvent:       <AddEvent />,
     orgEventDetail: <OrganizerEventDetail />,
     scanTicket:     <OrganizerScan />,
-    doorStaffLogin: <DoorStaffLogin />,
-    doorStaffScan:  <DoorStaffScan />,
   };
+
+  const content = fullScreenRoutes[screen] || appRoutes[screen] || <Login />;
+
   return (
-    <div key={screen} className="screen-enter" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      {routes[screen] || <Login />}
+    <div
+      key={screen}
+      className="screen-enter"
+      style={{ height: "100%", display: "flex", flexDirection: "column", background: "#f8f8f6" }}>
+      {content}
     </div>
   );
 }

@@ -2,24 +2,25 @@ import React, { useEffect, useState } from "react";
 import useStore from "../../store/useStore";
 import { eventsAPI } from "../../api";
 
-const BG = "linear-gradient(160deg, #1a0e00 0%, #110900 60%, #1a0e00 100%)";
-const CARD = "rgba(255,255,255,0.05)";
-const BORDER = "rgba(245,166,35,0.15)";
+// ── White theme constants ─────────────────────────────────────
+const BG = "#f8f8f6";
+const CARD = "#ffffff";
+const BORDER = "#f0f0f0";
 
-const darkInput = {
+const input = {
   width: "100%", padding: "14px 18px", marginBottom: "14px",
-  background: "rgba(255,255,255,0.06)", border: "1px solid rgba(245,166,35,0.2)",
-  borderRadius: "14px", fontSize: "14px", color: "#fff",
+  background: "#fff", border: "1.5px solid #f0f0f0",
+  borderRadius: "14px", fontSize: "14px", color: "#1a1a1a",
   outline: "none", fontFamily: "sans-serif", boxSizing: "border-box",
-  caretColor: "#f5a623",
+  caretColor: "#f5a623", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
 };
 
-const darkBtn = {
+const btn = {
   width: "100%", padding: "16px",
   background: "linear-gradient(135deg, #f5a623, #e8920f)",
-  color: "#fff", border: "none", borderRadius: "50px",
-  fontSize: "15px", fontWeight: 800, cursor: "pointer",
-  boxShadow: "0 8px 24px rgba(245,166,35,0.35)",
+  color: "#fff", border: "none", borderRadius: "16px",
+  fontSize: "15px", fontWeight: 700, cursor: "pointer",
+  boxShadow: "0 8px 24px rgba(245,166,35,0.28)",
   marginBottom: "12px",
 };
 
@@ -65,40 +66,42 @@ export function OrganizerHome() {
 
   return (
     <div style={{ background: BG, minHeight: "100%", padding: "20px 20px 120px" }}>
+
+      {/* Slide menu - LEFT side, white theme */}
       {menuOpen && (
         <>
-          <div onClick={() => setMenuOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 100 }} />
-          {/* ✅ Fixed: menu on LEFT side like attendee */}
-          <div style={{ position: "fixed", top: 0, left: 0, width: "75%", maxWidth: "280px", height: "100%", background: "linear-gradient(160deg, #1e1100 0%, #150c00 100%)", zIndex: 101, padding: "60px 24px 120px", display: "flex", flexDirection: "column", boxShadow: "4px 0 32px rgba(0,0,0,0.5)", borderRight: "1px solid rgba(245,166,35,0.15)" }}>
-            <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px", marginBottom: "12px" }}>👤</div>
-            <div style={{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "4px" }}>{currentUser?.first_name} {currentUser?.last_name}</div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", marginBottom: "8px" }}>{currentUser?.email}</div>
+          <div onClick={() => setMenuOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 100 }} />
+          <div style={{ position: "fixed", top: 0, left: 0, width: "75%", maxWidth: "280px", height: "100%", background: "#fff", zIndex: 101, padding: "60px 24px 100px", display: "flex", flexDirection: "column", boxShadow: "8px 0 40px rgba(0,0,0,0.12)" }}>
+            <div style={{ width: "56px", height: "56px", borderRadius: "18px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", marginBottom: "12px" }}>👤</div>
+            <div style={{ fontSize: "18px", fontWeight: 800, color: "#1a1a1a", marginBottom: "2px" }}>{currentUser?.first_name} {currentUser?.last_name}</div>
+            <div style={{ fontSize: "13px", color: "#aaa", marginBottom: "6px" }}>{currentUser?.email}</div>
             <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, background: "rgba(245,166,35,0.1)", padding: "4px 10px", borderRadius: "20px", display: "inline-block", marginBottom: "32px" }}>Organizer</div>
             {[
               ["📊", "Dashboard", () => { setMenuOpen(false); }],
               ["🎪", "My Events", () => { setMenuOpen(false); }],
               ["🚪", "Door Staff Access", () => { setMenuOpen(false); setScreen("doorStaffLogin"); }],
             ].map(([icon, label, action]) => (
-              <div key={label} onClick={action} style={{ display: "flex", alignItems: "center", gap: "14px", padding: "16px 0", borderBottom: "1px solid rgba(255,255,255,0.06)", cursor: "pointer" }}>
-                <span style={{ fontSize: "20px" }}>{icon}</span>
-                <span style={{ fontSize: "15px", fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>{label}</span>
+              <div key={label} onClick={action} style={{ display: "flex", alignItems: "center", gap: "14px", padding: "16px 0", borderBottom: "1px solid #f5f5f5", cursor: "pointer" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f8f8f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>{icon}</div>
+                <span style={{ fontSize: "15px", fontWeight: 600, color: "#1a1a1a" }}>{label}</span>
               </div>
             ))}
             <div style={{ flex: 1 }} />
-            <button onClick={handleLogout} style={{ width: "100%", padding: "14px", background: "rgba(231,76,60,0.2)", border: "1px solid rgba(231,76,60,0.4)", color: "#ff6b6b", borderRadius: "50px", fontWeight: 700, cursor: "pointer", fontSize: "14px" }}>LOG OUT</button>
+            <button onClick={handleLogout} style={{ width: "100%", padding: "14px", background: "#fff5f5", border: "1px solid #ffd6d6", color: "#e74c3c", borderRadius: "14px", fontWeight: 700, cursor: "pointer", fontSize: "14px" }}>Log Out</button>
           </div>
         </>
       )}
 
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
         <div>
-          <div style={{ fontWeight: 800, fontSize: "22px", color: "#fff" }}>Dashboard</div>
-          <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px" }}>Welcome back, {currentUser?.first_name} 👋</div>
+          <div style={{ fontWeight: 800, fontSize: "22px", color: "#1a1a1a", letterSpacing: "-0.3px" }}>Dashboard</div>
+          <div style={{ color: "#aaa", fontSize: "13px", marginTop: "2px" }}>Welcome back, {currentUser?.first_name} 👋</div>
         </div>
-        <div onClick={() => setMenuOpen(true)} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "5px", cursor: "pointer" }}>
-          <div style={{ width: "16px", height: "2px", background: "#fff", borderRadius: "2px" }} />
-          <div style={{ width: "16px", height: "2px", background: "#fff", borderRadius: "2px" }} />
-          <div style={{ width: "16px", height: "2px", background: "#fff", borderRadius: "2px" }} />
+        <div onClick={() => setMenuOpen(true)} style={{ width: "42px", height: "42px", borderRadius: "14px", background: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "5px", cursor: "pointer", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
+          <div style={{ width: "16px", height: "2px", background: "#1a1a1a", borderRadius: "2px" }} />
+          <div style={{ width: "16px", height: "2px", background: "#1a1a1a", borderRadius: "2px" }} />
+          <div style={{ width: "12px", height: "2px", background: "#1a1a1a", borderRadius: "2px" }} />
         </div>
       </div>
       <div style={{ height: "1px", background: BORDER, margin: "16px 0" }} />
@@ -106,7 +109,7 @@ export function OrganizerHome() {
       {loading ? (
         <div>
           {[1,2,3].map(i => (
-            <div key={i} style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden" }}>
+            <div key={i} style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
               <div className="skeleton" style={{ height: "110px" }} />
               <div style={{ padding: "12px 16px" }}>
                 <div className="skeleton" style={{ height: "14px", width: "60%", marginBottom: "8px" }} />
@@ -117,6 +120,7 @@ export function OrganizerHome() {
         </div>
       ) : (
         <>
+          {/* Stats grid */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
             {[
               { label: "Total Revenue", value: "Ghc " + Math.round(totalRevenue).toLocaleString(), icon: "💰", color: "#27ae60" },
@@ -124,33 +128,33 @@ export function OrganizerHome() {
               { label: "Active Events", value: orgEvents.filter(e => e.salesOpen).length, icon: "🎪", color: "#f5a623" },
               { label: "Platform Fee", value: "5%", icon: "🔗", color: "#a29bfe" },
             ].map(card => (
-              <div key={card.label} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "16px", padding: "16px" }}>
+              <div key={card.label} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
                 <div style={{ fontSize: "22px", marginBottom: "8px" }}>{card.icon}</div>
                 <div style={{ fontSize: "20px", fontWeight: 800, color: card.color }}>{card.value}</div>
-                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "2px" }}>{card.label}</div>
+                <div style={{ fontSize: "11px", color: "#aaa", marginTop: "2px" }}>{card.label}</div>
               </div>
             ))}
           </div>
 
-          <div style={{ background: "rgba(245,166,35,0.08)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "16px", padding: "14px 16px", marginBottom: "20px" }}>
+          <div style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "16px", padding: "14px 16px", marginBottom: "20px" }}>
             <div style={{ fontSize: "12px", fontWeight: 700, color: "#f5a623", marginBottom: "6px" }}>💡 How Payouts Work</div>
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>Attendees pay via MoMo or VISA. Paystack splits: <span style={{ color: "#27ae60", fontWeight: 700 }}>95% to your wallet</span>, 5% platform fee.</div>
+            <div style={{ fontSize: "12px", color: "#6b6b6b", lineHeight: 1.6 }}>Attendees pay via MoMo or VISA. Paystack splits: <span style={{ color: "#27ae60", fontWeight: 700 }}>95% to your wallet</span>, 5% platform fee.</div>
           </div>
 
-          <div style={{ fontWeight: 800, fontSize: "16px", color: "#fff", marginBottom: "12px" }}>Your Events</div>
+          <div style={{ fontWeight: 800, fontSize: "16px", color: "#1a1a1a", marginBottom: "12px" }}>Your Events</div>
           {orgEvents.length === 0 && (
-            <div style={{ textAlign: "center", padding: "40px", color: "rgba(255,255,255,0.3)" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "#aaa" }}>
               <div style={{ fontSize: "40px", marginBottom: "12px" }}>🎪</div>
               <div>No events yet. Create your first!</div>
             </div>
           )}
           {orgEvents.map(ev => (
             <div key={ev.id} onClick={() => { setViewingOrgEvent(ev); setScreen("orgEventDetail"); }}
-              style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", cursor: "pointer" }}>
+              style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 20px rgba(0,0,0,0.07)" }}>
               <div style={{ height: "110px", position: "relative" }}>
                 <img src={ev.image} alt={ev.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => { e.target.src = categoryImages.other; }} />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7))" }} />
-                <div style={{ position: "absolute", top: "10px", right: "10px", background: ev.salesOpen ? "#27ae60" : "#555", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.salesOpen ? "LIVE" : "CLOSED"}</div>
+                <div style={{ position: "absolute", top: "10px", right: "10px", background: ev.salesOpen ? "#27ae60" : "#aaa", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.salesOpen ? "LIVE" : "CLOSED"}</div>
                 <div style={{ position: "absolute", bottom: "10px", left: "12px" }}>
                   <div style={{ color: "#fff", fontWeight: 800, fontSize: "15px" }}>{ev.name}</div>
                   <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "11px" }}>📍 {ev.venue} · {ev.date}</div>
@@ -158,7 +162,7 @@ export function OrganizerHome() {
               </div>
               <div style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13px", color: "#27ae60", fontWeight: 700 }}>Ghc {Math.round(ev.ticketsSold * ev.price * 0.95).toLocaleString()} revenue</span>
-                <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)" }}>{ev.ticketsSold} / {ev.totalTickets} sold</span>
+                <span style={{ fontSize: "12px", color: "#aaa" }}>{ev.ticketsSold} / {ev.totalTickets} sold</span>
               </div>
             </div>
           ))}
@@ -185,13 +189,13 @@ export function OrganizerEvents() {
   return (
     <div style={{ background: BG, minHeight: "100%", padding: "20px 20px 120px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <div style={{ fontWeight: 800, fontSize: "22px", color: "#fff" }}>My Events</div>
-        <button onClick={() => setScreen("addEvent")} style={{ padding: "10px 18px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "30px", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}>+ New</button>
+        <div style={{ fontWeight: 800, fontSize: "22px", color: "#1a1a1a", letterSpacing: "-0.3px" }}>My Events</div>
+        <button onClick={() => setScreen("addEvent")} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "13px", fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(245,166,35,0.3)" }}>+ New Event</button>
       </div>
       {loading ? (
         <div>
           {[1,2,3].map(i => (
-            <div key={i} style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden" }}>
+            <div key={i} style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
               <div className="skeleton" style={{ height: "140px" }} />
               <div style={{ padding: "12px 16px" }}>
                 <div className="skeleton" style={{ height: "14px", width: "60%", marginBottom: "8px" }} />
@@ -203,27 +207,27 @@ export function OrganizerEvents() {
       ) : (
         <>
           {orgEvents.length === 0 && (
-            <div style={{ textAlign: "center", padding: "40px", color: "rgba(255,255,255,0.3)" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "#aaa" }}>
               <div style={{ fontSize: "40px", marginBottom: "12px" }}>🎪</div>
               <div>No events yet. Create your first!</div>
             </div>
           )}
           {orgEvents.map(ev => (
             <div key={ev.id} onClick={() => { setViewingOrgEvent(ev); setScreen("orgEventDetail"); }}
-              style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", cursor: "pointer" }}>
+              style={{ background: CARD, borderRadius: "20px", marginBottom: "14px", overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 20px rgba(0,0,0,0.07)" }}>
               <div style={{ height: "140px", position: "relative" }}>
                 <img src={ev.image} alt={ev.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => { e.target.src = categoryImages.other; }} />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.75))" }} />
-                <div style={{ position: "absolute", top: "10px", right: "10px", background: ev.salesOpen ? "#27ae60" : "#555", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.salesOpen ? "LIVE" : "CLOSED"}</div>
-                <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(0,0,0,0.5)", color: "#f5a623", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.category}</div>
+                <div style={{ position: "absolute", top: "10px", right: "10px", background: ev.salesOpen ? "#27ae60" : "#aaa", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.salesOpen ? "LIVE" : "CLOSED"}</div>
+                <div style={{ position: "absolute", top: "10px", left: "10px", background: "rgba(0,0,0,0.5)", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "10px" }}>{ev.category}</div>
                 <div style={{ position: "absolute", bottom: "12px", left: "14px", right: "14px" }}>
                   <div style={{ color: "#fff", fontWeight: 800, fontSize: "16px", marginBottom: "2px" }}>{ev.name}</div>
-                  <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "11px" }}>📍 {ev.venue} · {ev.date}</div>
+                  <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "11px" }}>📍 {ev.venue} · {ev.date}</div>
                 </div>
               </div>
               <div style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "13px", color: "#27ae60", fontWeight: 700 }}>Ghc {Math.round(ev.ticketsSold * ev.price * 0.95).toLocaleString()}</span>
-                <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)" }}>{ev.ticketsSold} / {ev.totalTickets} sold</span>
+                <span style={{ fontSize: "12px", color: "#aaa" }}>{ev.ticketsSold} / {ev.totalTickets} sold</span>
               </div>
             </div>
           ))}
@@ -245,14 +249,14 @@ export function OrganizerAlerts() {
 
   return (
     <div style={{ background: BG, minHeight: "100%", padding: "20px 20px 120px" }}>
-      <div style={{ fontWeight: 800, fontSize: "22px", color: "#fff", marginBottom: "20px" }}>Alerts</div>
+      <div style={{ fontWeight: 800, fontSize: "22px", color: "#1a1a1a", marginBottom: "20px", letterSpacing: "-0.3px" }}>Alerts</div>
       {alerts.map((a, i) => (
-        <div key={i} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "16px", padding: "16px", marginBottom: "12px", display: "flex", gap: "14px", alignItems: "flex-start" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: a.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>{a.icon}</div>
+        <div key={i} style={{ background: CARD, borderRadius: "16px", padding: "16px", marginBottom: "12px", display: "flex", gap: "14px", alignItems: "flex-start", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "14px", background: a.color + "15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", flexShrink: 0 }}>{a.icon}</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: "14px", color: "#fff", marginBottom: "4px" }}>{a.title}</div>
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", lineHeight: 1.5, marginBottom: "6px" }}>{a.body}</div>
-            <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.25)" }}>{a.time}</div>
+            <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "4px" }}>{a.title}</div>
+            <div style={{ fontSize: "13px", color: "#6b6b6b", lineHeight: 1.5, marginBottom: "6px" }}>{a.body}</div>
+            <div style={{ fontSize: "11px", color: "#bbb" }}>{a.time}</div>
           </div>
         </div>
       ))}
@@ -280,38 +284,47 @@ export function AddEvent() {
   ];
 
   return (
-    <div style={{ background: BG, minHeight: "100%", paddingBottom: "120px" }}>
-      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px" }}>
-        <button onClick={() => setScreen("app")} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(245,166,35,0.15)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#f5a623", fontSize: "18px" }}>←</button>
-        <div style={{ fontSize: "18px", fontWeight: 800, color: "#fff" }}>Create Event</div>
+    <div style={{ background: BG, minHeight: "100%", paddingBottom: "40px" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px", background: "#fff", borderBottom: "1px solid #f0f0f0", position: "sticky", top: 0, zIndex: 10 }}>
+        <button onClick={() => setScreen("app")} style={{ width: "38px", height: "38px", borderRadius: "12px", background: "#f8f8f6", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "18px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>←</button>
+        <div style={{ fontSize: "17px", fontWeight: 700, color: "#1a1a1a" }}>Create Event</div>
       </div>
-      <div style={{ padding: "0 20px" }}>
 
-        {/* Category Selector */}
+      <div style={{ padding: "20px" }}>
+        {/* Category */}
         <div style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", fontWeight: 600, marginBottom: "10px" }}>Category *</div>
+          <div style={{ fontSize: "13px", color: "#6b6b6b", fontWeight: 600, marginBottom: "10px" }}>Category *</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {CATEGORIES.map(cat => (
               <div key={cat} onClick={() => setAddEventForm({ ...addEventForm, category: cat })}
-                style={{ padding: "8px 16px", borderRadius: "20px", cursor: "pointer", fontSize: "13px", fontWeight: 700, border: "2px solid " + (addEventForm.category === cat ? "#f5a623" : "rgba(255,255,255,0.1)"), background: addEventForm.category === cat ? "rgba(245,166,35,0.15)" : "rgba(255,255,255,0.04)", color: addEventForm.category === cat ? "#f5a623" : "rgba(255,255,255,0.4)" }}>
+                style={{ padding: "8px 16px", borderRadius: "20px", cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  border: "1.5px solid " + (addEventForm.category === cat ? "#f5a623" : "#f0f0f0"),
+                  background: addEventForm.category === cat ? "rgba(245,166,35,0.08)" : "#fff",
+                  color: addEventForm.category === cat ? "#f5a623" : "#6b6b6b",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                }}>
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Image Upload — JPG/PNG/URL */}
+        {/* Image */}
         <div style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", fontWeight: 600, marginBottom: "10px" }}>Event Image</div>
+          <div style={{ fontSize: "13px", color: "#6b6b6b", fontWeight: 600, marginBottom: "10px" }}>Event Image</div>
           <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-            {[["upload", "📷 Upload Photo"], ["url", "🔗 Image URL"]].map(([t, label]) => (
+            {[["upload", "📷 Upload"], ["url", "🔗 URL"]].map(([t, label]) => (
               <div key={t} onClick={() => setImageType(t)}
-                style={{ flex: 1, padding: "10px", borderRadius: "12px", textAlign: "center", cursor: "pointer", fontSize: "12px", fontWeight: 700, border: "2px solid " + (imageType === t ? "#f5a623" : "rgba(255,255,255,0.1)"), background: imageType === t ? "rgba(245,166,35,0.15)" : "rgba(255,255,255,0.04)", color: imageType === t ? "#f5a623" : "rgba(255,255,255,0.4)" }}>
+                style={{ flex: 1, padding: "10px", borderRadius: "12px", textAlign: "center", cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  border: "1.5px solid " + (imageType === t ? "#f5a623" : "#f0f0f0"),
+                  background: imageType === t ? "rgba(245,166,35,0.08)" : "#fff",
+                  color: imageType === t ? "#f5a623" : "#6b6b6b",
+                }}>
                 {label}
               </div>
             ))}
           </div>
-
           {imageType === "upload" ? (
             <div>
               <input type="file" accept="image/jpeg,image/png,image/webp,image/jpg" id="event-image-upload" style={{ display: "none" }}
@@ -321,10 +334,9 @@ export function AddEvent() {
                   const reader = new FileReader();
                   reader.onload = (ev) => setAddEventForm({ ...addEventForm, image: ev.target.result });
                   reader.readAsDataURL(file);
-                }}
-              />
-              <label htmlFor="event-image-upload" style={{ display: "block", padding: "24px 20px", background: "rgba(255,255,255,0.04)", border: "2px dashed rgba(245,166,35,0.3)", borderRadius: "14px", textAlign: "center", cursor: "pointer" }}>
-                {addEventForm.image && addEventForm.image.startsWith('data:') ? (
+                }} />
+              <label htmlFor="event-image-upload" style={{ display: "block", padding: "24px 20px", background: "#fff", border: "2px dashed #f0f0f0", borderRadius: "16px", textAlign: "center", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+                {addEventForm.image?.startsWith('data:') ? (
                   <div>
                     <img src={addEventForm.image} alt="preview" style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "10px", marginBottom: "8px" }} />
                     <div style={{ color: "#27ae60", fontSize: "12px", fontWeight: 700 }}>✅ Image selected — tap to change</div>
@@ -332,8 +344,8 @@ export function AddEvent() {
                 ) : (
                   <div>
                     <div style={{ fontSize: "32px", marginBottom: "8px" }}>📷</div>
-                    <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", fontWeight: 600 }}>Tap to upload JPG or PNG</div>
-                    <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "11px", marginTop: "4px" }}>Max 5MB</div>
+                    <div style={{ color: "#6b6b6b", fontSize: "13px", fontWeight: 600 }}>Tap to upload JPG or PNG</div>
+                    <div style={{ color: "#bbb", fontSize: "11px", marginTop: "4px" }}>Max 5MB</div>
                   </div>
                 )}
               </label>
@@ -341,27 +353,28 @@ export function AddEvent() {
           ) : (
             <div>
               <input type="text" placeholder="https://..." value={addEventForm.image?.startsWith('data:') ? '' : (addEventForm.image || "")}
-                onChange={e => setAddEventForm({ ...addEventForm, image: e.target.value })} style={darkInput} />
-              {addEventForm.category && !(addEventForm.image?.startsWith('http')) && (
+                onChange={e => setAddEventForm({ ...addEventForm, image: e.target.value })} style={input} />
+              {addEventForm.category && !addEventForm.image?.startsWith('http') && (
                 <div style={{ marginTop: "-8px", marginBottom: "10px" }}>
-                  <img src={categoryImages[addEventForm.category]} alt="preview" style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "10px", opacity: 0.6 }} />
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginTop: "4px" }}>Auto image for {addEventForm.category}</div>
+                  <img src={categoryImages[addEventForm.category]} alt="preview" style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "10px", opacity: 0.7 }} />
+                  <div style={{ fontSize: "11px", color: "#bbb", marginTop: "4px" }}>Auto image for {addEventForm.category}</div>
                 </div>
               )}
             </div>
           )}
         </div>
 
+        {/* Fields */}
         {fields.map(([key, label, type, placeholder]) => (
           <div key={key} style={{ marginBottom: "16px" }}>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", fontWeight: 600, marginBottom: "8px" }}>{label}</div>
+            <div style={{ fontSize: "13px", color: "#6b6b6b", fontWeight: 600, marginBottom: "8px" }}>{label}</div>
             <input type={type} placeholder={placeholder} value={addEventForm[key] || ""}
               onChange={e => setAddEventForm({ ...addEventForm, [key]: e.target.value })}
-              style={{ ...darkInput, colorScheme: "dark" }} />
+              style={{ ...input, colorScheme: "light" }} />
           </div>
         ))}
 
-        <button onClick={handleAddEvent} style={{ ...darkBtn, marginTop: "8px" }}>🎪 CREATE EVENT</button>
+        <button onClick={handleAddEvent} style={{ ...btn, marginTop: "8px" }}>🎪 Create Event</button>
       </div>
     </div>
   );
@@ -388,7 +401,6 @@ export function OrganizerEventDetail() {
     setEditForm({ name: ev.name, venue: ev.venue, date: ev.date, time: ev.time, price: ev.price, description: ev.description || "" });
     setEditing(true);
   };
-
   const saveEdit = () => {
     setViewingOrgEvent({ ...ev, ...editForm, price: parseFloat(editForm.price) });
     setEditing(false);
@@ -396,40 +408,31 @@ export function OrganizerEventDetail() {
 
   if (editing) return (
     <div style={{ background: BG, minHeight: "100%", paddingBottom: "40px" }}>
-      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px" }}>
-        <button onClick={() => setEditing(false)} style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(245,166,35,0.15)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#f5a623", fontSize: "18px" }}>←</button>
-        <div style={{ fontSize: "18px", fontWeight: 800, color: "#fff" }}>Edit Event</div>
+      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px", background: "#fff", borderBottom: "1px solid #f0f0f0" }}>
+        <button onClick={() => setEditing(false)} style={{ width: "38px", height: "38px", borderRadius: "12px", background: "#f8f8f6", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "18px" }}>←</button>
+        <div style={{ fontSize: "17px", fontWeight: 700, color: "#1a1a1a" }}>Edit Event</div>
       </div>
-      <div style={{ padding: "0 20px" }}>
-        {[
-          ["name", "Event Name", "text"],
-          ["venue", "Venue", "text"],
-          ["date", "Date", "date"],
-          ["time", "Time", "time"],
-          ["price", "Ticket Price (Ghc)", "number"],
-          ["description", "Description", "text"],
-        ].map(([key, label, type]) => (
+      <div style={{ padding: "20px" }}>
+        {[["name","Event Name","text"],["venue","Venue","text"],["date","Date","date"],["time","Time","time"],["price","Ticket Price (Ghc)","number"],["description","Description","text"]].map(([key, label, type]) => (
           <div key={key} style={{ marginBottom: "16px" }}>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", fontWeight: 600, marginBottom: "8px" }}>{label}</div>
-            <input type={type} value={editForm[key] || ""} onChange={e => setEditForm({ ...editForm, [key]: e.target.value })}
-              style={{ ...darkInput, colorScheme: "dark" }} />
+            <div style={{ fontSize: "13px", color: "#6b6b6b", fontWeight: 600, marginBottom: "8px" }}>{label}</div>
+            <input type={type} value={editForm[key] || ""} onChange={e => setEditForm({ ...editForm, [key]: e.target.value })} style={{ ...input, colorScheme: "light" }} />
           </div>
         ))}
-        <button onClick={saveEdit} style={darkBtn}>💾 SAVE CHANGES</button>
+        <button onClick={saveEdit} style={btn}>💾 Save Changes</button>
       </div>
     </div>
   );
 
   return (
     <div style={{ background: BG, minHeight: "100%", paddingBottom: "40px" }}>
-      <div style={{ height: "200px", position: "relative" }}>
+      <div style={{ height: "220px", position: "relative" }}>
         <img src={coverImage} alt={ev.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => { e.target.src = categoryImages.other; }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(17,9,0,0.3), rgba(17,9,0,0.85))" }} />
-        <button onClick={() => setScreen("app")} style={{ position: "absolute", top: "16px", left: "16px", width: "36px", height: "36px", borderRadius: "50%", background: "rgba(0,0,0,0.4)", border: "1px solid rgba(245,166,35,0.3)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#f5a623", fontSize: "18px" }}>←</button>
-        {/* ✅ Edit button */}
-        <button onClick={startEdit} style={{ position: "absolute", top: "16px", right: "16px", padding: "6px 14px", background: "rgba(245,166,35,0.9)", border: "none", borderRadius: "20px", color: "#000", fontSize: "12px", fontWeight: 800, cursor: "pointer" }}>✏️ Edit</button>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8))" }} />
+        <button onClick={() => setScreen("app")} style={{ position: "absolute", top: "16px", left: "16px", width: "38px", height: "38px", borderRadius: "50%", background: "rgba(255,255,255,0.9)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "18px" }}>←</button>
+        <button onClick={startEdit} style={{ position: "absolute", top: "16px", right: "16px", padding: "7px 16px", background: "rgba(255,255,255,0.9)", border: "none", borderRadius: "20px", color: "#1a1a1a", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>✏️ Edit</button>
         <div style={{ position: "absolute", bottom: "16px", left: "20px", right: "20px" }}>
-          <div style={{ color: "#f5a623", fontSize: "10px", fontWeight: 700, letterSpacing: "1px", marginBottom: "4px" }}>{ev.category?.toUpperCase()}</div>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "10px", fontWeight: 700, letterSpacing: "1px", marginBottom: "4px" }}>{ev.category?.toUpperCase()}</div>
           <div style={{ color: "#fff", fontWeight: 900, fontSize: "20px" }}>{ev.name}</div>
           <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "12px", marginTop: "4px" }}>📍 {ev.venue} · {ev.date}</div>
         </div>
@@ -441,41 +444,41 @@ export function OrganizerEventDetail() {
             ["Revenue (95%)", "Ghc " + revenue.toLocaleString(), "#27ae60"],
             ["Platform Fee", "Ghc " + fee.toLocaleString(), "#e74c3c"],
             ["Tickets Sold", ev.ticketsSold + " / " + ev.totalTickets, "#5dade2"],
-            ["Admitted", (ev.admittedCount || 0) + " people", "#f5a623"]
+            ["Admitted", (ev.admittedCount || 0) + " people", "#f5a623"],
           ].map(([k, v, c]) => (
-            <div key={k} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "14px", padding: "14px" }}>
+            <div key={k} style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "14px", padding: "14px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
               <div style={{ fontSize: "18px", fontWeight: 800, color: c }}>{v}</div>
-              <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "2px" }}>{k}</div>
+              <div style={{ fontSize: "11px", color: "#aaa", marginTop: "2px" }}>{k}</div>
             </div>
           ))}
         </div>
 
-        <button onClick={() => toggleSales(ev.id)} style={{ ...darkBtn, background: ev.salesOpen ? "linear-gradient(135deg,#e74c3c,#c0392b)" : "linear-gradient(135deg,#27ae60,#1e8449)" }}>
-          {ev.salesOpen ? "⏸ PAUSE TICKET SALES" : "▶ RESUME TICKET SALES"}
+        <button onClick={() => toggleSales(ev.id)} style={{ ...btn, background: ev.salesOpen ? "linear-gradient(135deg,#e74c3c,#c0392b)" : "linear-gradient(135deg,#27ae60,#1e8449)" }}>
+          {ev.salesOpen ? "⏸ Pause Ticket Sales" : "▶ Resume Ticket Sales"}
         </button>
-        <button onClick={() => setScreen("scanTicket")} style={{ ...darkBtn, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "none", color: "#fff" }}>
-          🔍 SCAN TICKETS AT DOOR
+        <button onClick={() => setScreen("scanTicket")} style={{ ...btn, background: "#f8f8f6", border: "1.5px solid #f0f0f0", boxShadow: "none", color: "#1a1a1a" }}>
+          🔍 Scan Tickets at Door
         </button>
 
-        <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "16px", padding: "16px", marginBottom: "16px" }}>
-          <div style={{ fontWeight: 700, fontSize: "14px", color: "#fff", marginBottom: "12px" }}>🚪 Door Staff Access</div>
-          <button onClick={() => generateDoorCode(ev.id, ev.name)} style={{ width: "100%", padding: "12px", background: "rgba(245,166,35,0.08)", color: "#f5a623", border: "2px dashed rgba(245,166,35,0.4)", borderRadius: "12px", fontSize: "13px", fontWeight: 700, cursor: "pointer", marginBottom: "12px" }}>
+        <div style={{ background: CARD, border: "1px solid " + BORDER, borderRadius: "16px", padding: "16px", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "12px" }}>🚪 Door Staff Access</div>
+          <button onClick={() => generateDoorCode(ev.id, ev.name)} style={{ width: "100%", padding: "12px", background: "rgba(245,166,35,0.06)", color: "#f5a623", border: "2px dashed rgba(245,166,35,0.3)", borderRadius: "12px", fontSize: "13px", fontWeight: 700, cursor: "pointer", marginBottom: "12px" }}>
             + Generate Door Staff Invite Code
           </button>
           {invites.map(inv => (
-            <div key={inv.code} style={{ background: inv.used ? "rgba(255,255,255,0.03)" : "rgba(245,166,35,0.06)", border: "1px solid " + (inv.used ? "rgba(255,255,255,0.08)" : "rgba(245,166,35,0.2)"), borderRadius: "10px", padding: "10px 14px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontFamily: "monospace", fontWeight: 700, color: inv.used ? "rgba(255,255,255,0.25)" : "#f5a623", fontSize: "14px" }}>{inv.code}</span>
-              <span style={{ fontSize: "11px", color: inv.used ? "rgba(255,255,255,0.25)" : "#27ae60", fontWeight: 600 }}>{inv.used ? "USED" : "ACTIVE"}</span>
+            <div key={inv.code} style={{ background: inv.used ? "#f8f8f6" : "rgba(245,166,35,0.05)", border: "1px solid " + (inv.used ? "#f0f0f0" : "rgba(245,166,35,0.2)"), borderRadius: "10px", padding: "10px 14px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontFamily: "monospace", fontWeight: 700, color: inv.used ? "#bbb" : "#f5a623", fontSize: "14px" }}>{inv.code}</span>
+              <span style={{ fontSize: "11px", color: inv.used ? "#bbb" : "#27ae60", fontWeight: 600 }}>{inv.used ? "USED" : "ACTIVE"}</span>
             </div>
           ))}
         </div>
 
-        <div style={{ background: "rgba(41,128,185,0.1)", border: "1px solid rgba(41,128,185,0.25)", borderRadius: "14px", padding: "14px 16px" }}>
-          <div style={{ fontSize: "12px", fontWeight: 700, color: "#5dade2", marginBottom: "6px" }}>ℹ️ How Door Staff Flow Works</div>
-          <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>
+        <div style={{ background: "rgba(41,128,185,0.05)", border: "1px solid rgba(41,128,185,0.15)", borderRadius: "14px", padding: "14px 16px" }}>
+          <div style={{ fontSize: "12px", fontWeight: 700, color: "#2980b9", marginBottom: "6px" }}>ℹ️ How Door Staff Flow Works</div>
+          <div style={{ fontSize: "12px", color: "#6b6b6b", lineHeight: 1.6 }}>
             1. Generate a code above<br />
             2. Share it with your door staff<br />
-            3. They go to Login → "Enter with invite code"<br />
+            3. They enter code on Door Staff login<br />
             4. They scan tickets at the door
           </div>
         </div>
