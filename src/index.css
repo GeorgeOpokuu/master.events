@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
+  scrollbar-width: none;
 }
 
 html, body, #root {
@@ -16,7 +17,6 @@ html, body, #root {
 }
 
 ::-webkit-scrollbar { display: none; }
-scrollbar-width: none;
 
 button { font-family: inherit; }
 input { font-family: inherit; }
