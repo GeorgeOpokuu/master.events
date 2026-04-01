@@ -100,28 +100,41 @@ function QRScanner({ onScan }) {
   };
 
   const scanFrame = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
+  const video = videoRef.current;
+  const canvas = canvasRef.current;
+  if (!video || !canvas) return;
 
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0);
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
 
-      // Try BarcodeDetector API (Chrome on Android)
-      if ('BarcodeDetector' in window) {
-        const detector = new window.BarcodeDetector({ formats: ['qr_code'] });
-        detector.detect(canvas).then(codes => {
-          if (codes.length > 0) {
-            onScanRef.current(codes[0].rawValue);
-          }
-        }).catch(() => {});
+    // Try BarcodeDetector first (Android Chrome)
+    if ('BarcodeDetector' in window) {
+      const detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+      detector.detect(canvas).then(codes => {
+        if (codes.length > 0) {
+          onScanRef.current(codes[0].rawValue);
+          return;
+        }
+      }).catch(() => {});
+    }
+
+    // Fallback: jsQR (works on iOS Safari)
+    if (window.jsQR) {
+      const imageData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
+      const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+      if (code) {
+        onScanRef.current(code.data);
+        return;
       }
     }
-    animRef.current = requestAnimationFrame(scanFrame);
-  };
+  }
+  animRef.current = requestAnimationFrame(scanFrame);
+};
 
   if (camError) return (
     <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "16px", padding: "32px 20px", textAlign: "center" }}>
