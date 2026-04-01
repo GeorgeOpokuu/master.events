@@ -178,3 +178,155 @@ export function TicketView() {
     </div>
   );
 }
+export function Resale() {
+  const resaleTicket = useStore(s => s.resaleTicket);
+  const resalePrice = useStore(s => s.resalePrice);
+  const resaleError = useStore(s => s.resaleError);
+  const setResalePrice = useStore(s => s.setResalePrice);
+  const handleListForResale = useStore(s => s.handleListForResale);
+  const setScreen = useStore(s => s.setScreen);
+
+  if (!resaleTicket) return null;
+  const ev = resaleTicket.event;
+  const price = parseFloat(resalePrice) || 0;
+  const fee = Math.round(price * 0.02 * 100) / 100;
+  const payout = Math.round((price - fee) * 100) / 100;
+
+  return (
+    <div style={{ background: BG, minHeight: "100%", paddingBottom: "100px" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px", background: "#fff", borderBottom: "1px solid #f0f0f0" }}>
+        <BackBtn onClick={() => setScreen("ticketView")} />
+        <div style={{ fontSize: "17px", fontWeight: 700, color: "#1a1a1a" }}>List for Resale</div>
+      </div>
+      <div style={{ padding: "16px 20px" }}>
+        <div style={{ background: CARD, borderRadius: "16px", padding: "16px", marginBottom: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ fontWeight: 700, fontSize: "15px", color: "#1a1a1a" }}>{ev.name}</div>
+          <div style={{ color: "#aaa", fontSize: "12px", marginTop: "4px" }}>
+            {"Original: Ghc " + ev.price + " · Max: Ghc " + (ev.price - 1) + " · Min: Ghc " + Math.floor(ev.price * 0.3)}
+          </div>
+        </div>
+        <div style={{ background: "rgba(39,174,96,0.06)", border: "1px solid rgba(39,174,96,0.15)", borderRadius: "14px", padding: "12px 16px", marginBottom: "14px" }}>
+          <div style={{ fontSize: "13px", color: "#27ae60", fontWeight: 700 }}>Only 2% platform fee on resales</div>
+          <div style={{ fontSize: "12px", color: "#aaa", marginTop: "4px" }}>You keep 98% of your resale price</div>
+        </div>
+        <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "12px" }}>Your Resale Price (Ghc)</div>
+          <input
+            value={resalePrice}
+            onChange={e => setResalePrice(e.target.value)}
+            type="number"
+            placeholder={"Max: Ghc " + (ev.price - 1)}
+            style={{ ...input, fontSize: "22px", fontWeight: 800, border: "2px solid " + (resaleError ? "#e74c3c" : "#f5a623") }}
+          />
+          {resaleError && <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "-4px" }}>{"⚠️ " + resaleError}</div>}
+        </div>
+        {price > 0 && (
+          <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+            <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "12px" }}>Fee Breakdown</div>
+            {[
+              ["Listing Price", "Ghc " + price, "#1a1a1a"],
+              ["Platform Fee (2%)", "- Ghc " + fee, "#e74c3c"],
+              ["Your Payout", "Ghc " + payout, "#27ae60"],
+            ].map(([k, v, c], i) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: i < 2 ? "1px solid #f5f5f5" : "none" }}>
+                <span style={{ color: "#aaa", fontSize: "14px" }}>{k}</span>
+                <span style={{ color: c, fontWeight: i === 2 ? 800 : 600, fontSize: "14px" }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <button onClick={handleListForResale} style={btn}>List for Resale</button>
+      </div>
+    </div>
+  );
+}
+
+export function ResaleSuccess() {
+  const setScreen = useStore(s => s.setScreen);
+  const setActiveTab = useStore(s => s.setActiveTab);
+  return (
+    <div style={{ background: BG, minHeight: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 28px", textAlign: "center" }}>
+      <div style={{ width: "80px", height: "80px", borderRadius: "24px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "36px", marginBottom: "20px", boxShadow: "0 8px 24px rgba(245,166,35,0.3)" }}>🏷️</div>
+      <div style={{ fontSize: "26px", fontWeight: 800, color: "#1a1a1a", marginBottom: "8px" }}>Listed for Resale!</div>
+      <div style={{ color: "#6b6b6b", fontSize: "14px", lineHeight: 1.7, marginBottom: "28px" }}>Your ticket is now on the resale market. You will be notified when it sells.</div>
+      <div style={{ background: "#fff", border: "1px solid #f0f0f0", borderRadius: "20px", padding: "20px", marginBottom: "28px", width: "100%", textAlign: "left", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+        <div style={{ fontSize: "12px", color: "#27ae60", fontWeight: 700, marginBottom: "8px" }}>Listed on Marketplace</div>
+        <div style={{ fontFamily: "monospace", fontSize: "14px", color: "#f5a623", fontWeight: 700 }}>
+          {"REF: " + Math.random().toString(36).substr(2, 12).toUpperCase()}
+        </div>
+      </div>
+      <button onClick={() => { setScreen("app"); setActiveTab("tickets"); }} style={btn}>View My Tickets</button>
+    </div>
+  );
+}
+
+export function Transfer() {
+  const transferTicket = useStore(s => s.transferTicket);
+  const transferEmail = useStore(s => s.transferEmail);
+  const transferName = useStore(s => s.transferName);
+  const transferDone = useStore(s => s.transferDone);
+  const setTransferEmail = useStore(s => s.setTransferEmail);
+  const setTransferName = useStore(s => s.setTransferName);
+  const handleTransfer = useStore(s => s.handleTransfer);
+  const setScreen = useStore(s => s.setScreen);
+  const setActiveTab = useStore(s => s.setActiveTab);
+  const [transferring, setTransferring] = useState(false);
+
+  if (!transferTicket) return null;
+  const ev = transferTicket.event;
+
+  const onTransfer = async () => {
+    setTransferring(true);
+    await handleTransfer();
+    setTransferring(false);
+  };
+
+  if (transferDone) return (
+    <div style={{ background: BG, minHeight: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 28px", textAlign: "center" }}>
+      <div style={{ width: "80px", height: "80px", borderRadius: "24px", background: "rgba(39,174,96,0.1)", border: "2px solid rgba(39,174,96,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "36px", marginBottom: "20px" }}>✅</div>
+      <div style={{ fontSize: "26px", fontWeight: 800, color: "#1a1a1a", marginBottom: "8px" }}>Ticket Transferred!</div>
+      <div style={{ color: "#6b6b6b", fontSize: "14px", lineHeight: 1.7, marginBottom: "20px" }}>
+        {"Your ticket for "}
+        <span style={{ color: "#1a1a1a", fontWeight: 700 }}>{ev.name}</span>
+        {" has been sent to "}
+        <span style={{ color: "#f5a623", fontWeight: 700 }}>{transferName || transferEmail}</span>
+      </div>
+      <div style={{ background: "#fff", border: "1px solid #f0f0f0", borderRadius: "20px", padding: "20px", marginBottom: "28px", width: "100%", textAlign: "left", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+        <div style={{ fontSize: "12px", color: "#27ae60", fontWeight: 700, marginBottom: "6px" }}>Transfer Complete on Blockchain</div>
+        <div style={{ fontSize: "12px", color: "#aaa" }}>Your old QR code is now void. Recipient has a new NFT ticket.</div>
+      </div>
+      <button onClick={() => { setScreen("app"); setActiveTab("tickets"); }} style={btn}>Back to My Tickets</button>
+    </div>
+  );
+
+  return (
+    <div style={{ background: BG, minHeight: "100%", paddingBottom: "100px" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px", background: "#fff", borderBottom: "1px solid #f0f0f0" }}>
+        <BackBtn onClick={() => setScreen("ticketView")} />
+        <div style={{ fontSize: "17px", fontWeight: 700, color: "#1a1a1a" }}>Transfer Ticket</div>
+      </div>
+      <div style={{ padding: "16px 20px" }}>
+        <div style={{ background: "rgba(41,128,185,0.05)", border: "1px solid rgba(41,128,185,0.15)", borderRadius: "16px", padding: "16px 18px", marginBottom: "20px" }}>
+          <div style={{ fontWeight: 700, fontSize: "13px", color: "#2980b9", marginBottom: "10px" }}>About Transfers</div>
+          {["Free — no platform fee", "Permanent — you lose ownership forever", "Recipient must have a Master Events account", "Your current QR becomes void instantly"].map((info, i) => (
+            <div key={i} style={{ display: "flex", gap: "8px", marginBottom: "6px", fontSize: "13px", color: "#6b6b6b" }}>
+              <span style={{ color: "#2980b9" }}>•</span>
+              <span>{info}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b", marginBottom: "8px" }}>Recipient Full Name</div>
+        <input placeholder="e.g. Kwame Mensah" value={transferName} onChange={e => setTransferName(e.target.value)} style={input} />
+        <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b", marginBottom: "8px" }}>Recipient Email</div>
+        <input placeholder="e.g. kwame@email.com" value={transferEmail} onChange={e => setTransferEmail(e.target.value)} style={input} />
+        <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: "12px", padding: "12px 16px", marginBottom: "24px" }}>
+          <div style={{ fontSize: "12px", color: "#e74c3c", fontWeight: 700, marginBottom: "4px" }}>This cannot be undone</div>
+          <div style={{ fontSize: "12px", color: "#aaa" }}>Make sure the email address is correct before confirming.</div>
+        </div>
+        <button onClick={onTransfer} disabled={transferring} style={{ ...btn, background: "linear-gradient(135deg, #2980b9, #1a6fa8)", opacity: transferring ? 0.6 : 1 }}>
+          {transferring ? "⏳ Transferring..." : "📤 Confirm Transfer"}
+        </button>
+      </div>
+    </div>
+  );
+}
