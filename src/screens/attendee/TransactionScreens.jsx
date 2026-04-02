@@ -1,22 +1,167 @@
-// 🔥 FIXED: TicketView (main error was here)
+import React, { useState } from "react";
+import useStore from "../../store/useStore";
+
+const BG = "#f8f8f6";
+const CARD = "#ffffff";
+const BORDER = "#f0f0f0";
+const API = "https://master-events-backend.onrender.com";
+
+const input = {
+  width: "100%", padding: "14px 18px", marginBottom: "14px",
+  background: "#fff", border: "1.5px solid #f0f0f0",
+  borderRadius: "14px", fontSize: "14px", color: "#1a1a1a",
+  outline: "none", fontFamily: "sans-serif", boxSizing: "border-box",
+  caretColor: "#f5a623", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+};
+
+const btn = {
+  width: "100%", padding: "16px",
+  background: "linear-gradient(135deg, #f5a623, #e8920f)",
+  color: "#fff", border: "none", borderRadius: "16px",
+  fontSize: "15px", fontWeight: 700, cursor: "pointer",
+  boxShadow: "0 8px 24px rgba(245,166,35,0.28)",
+  marginBottom: "12px",
+};
+
+function BackBtn({ onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        width: "38px", height: "38px", borderRadius: "12px",
+        background: "#fff", display: "flex", alignItems: "center",
+        justifyContent: "center", cursor: "pointer", fontSize: "18px",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.08)", color: "#1a1a1a", flexShrink: 0,
+      }}
+    >
+      {"\u2190"}
+    </div>
+  );
+}
+
+export function Checkout() {
+  const checkoutEvent = useStore(s => s.checkoutEvent);
+  const ticketQty = useStore(s => s.ticketQty);
+  const payMethod = useStore(s => s.payMethod);
+  const setTicketQty = useStore(s => s.setTicketQty);
+  const setPayMethod = useStore(s => s.setPayMethod);
+  const handleBuyTicket = useStore(s => s.handleBuyTicket);
+  const setScreen = useStore(s => s.setScreen);
+  const [paying, setPaying] = useState(false);
+
+  if (!checkoutEvent) return null;
+
+  const subtotal = checkoutEvent.price * ticketQty;
+  const fee = Math.round(subtotal * 0.05);
+  const total = subtotal + fee;
+
+  const onPay = async () => {
+    setPaying(true);
+    await handleBuyTicket();
+    setPaying(false);
+  };
+
+  return (
+    <div style={{ background: BG, minHeight: "100%", paddingBottom: "100px" }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "20px", gap: "14px", background: "#fff", borderBottom: "1px solid #f0f0f0" }}>
+        <BackBtn onClick={() => setScreen("app")} />
+        <div style={{ fontSize: "17px", fontWeight: 700, color: "#1a1a1a" }}>Checkout</div>
+      </div>
+
+      <div style={{ margin: "16px 20px", borderRadius: "20px", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+        <div style={{ height: "140px", position: "relative" }}>
+          {checkoutEvent.image
+            ? <img src={checkoutEvent.image} alt={checkoutEvent.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            : <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #f5a623, #e8920f)" }} />
+          }
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.65))" }} />
+          <div style={{ position: "absolute", bottom: "14px", left: "16px", right: "16px" }}>
+            <div style={{ color: "#fff", fontWeight: 800, fontSize: "18px" }}>{checkoutEvent.name}</div>
+            <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "12px", marginTop: "4px" }}>
+              {"📅 " + checkoutEvent.date + " · 📍 " + checkoutEvent.venue}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "0 20px" }}>
+        <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "14px" }}>Quantity</div>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <button onClick={() => setTicketQty(Math.max(1, ticketQty - 1))}
+              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>
+              -
+            </button>
+            <span style={{ fontSize: "28px", fontWeight: 900, color: "#1a1a1a", minWidth: "40px", textAlign: "center" }}>{ticketQty}</span>
+            <button onClick={() => setTicketQty(Math.min(10, ticketQty + 1))}
+              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>
+              +
+            </button>
+          </div>
+        </div>
+
+        <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "14px" }}>Payment Method</div>
+          <div style={{ display: "flex", gap: "10px" }}>
+            {[["momo", "📱 MoMo"], ["visa", "💳 VISA"]].map(([id, label]) => (
+              <button key={id} onClick={() => setPayMethod(id)} style={{
+                flex: 1, padding: "14px", borderRadius: "14px", cursor: "pointer",
+                fontWeight: 700, fontSize: "14px",
+                border: payMethod === id ? "2px solid #f5a623" : "1.5px solid #f0f0f0",
+                background: payMethod === id ? "rgba(245,166,35,0.08)" : "#f8f8f6",
+                color: payMethod === id ? "#f5a623" : "#aaa",
+              }}>{label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "20px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+          <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "14px" }}>Order Summary</div>
+          <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "10px", marginBottom: "10px", borderBottom: "1px solid #f5f5f5" }}>
+            <span style={{ color: "#aaa", fontSize: "14px" }}>Tickets</span>
+            <span style={{ color: "#1a1a1a", fontSize: "14px", fontWeight: 600 }}>{ticketQty + " x Ghc " + checkoutEvent.price}</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "10px", marginBottom: "10px", borderBottom: "1px solid #f5f5f5" }}>
+            <span style={{ color: "#aaa", fontSize: "14px" }}>Platform Fee (5%)</span>
+            <span style={{ color: "#1a1a1a", fontSize: "14px", fontWeight: 600 }}>{"Ghc " + fee}</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: "#1a1a1a", fontWeight: 700, fontSize: "16px" }}>Total</span>
+            <span style={{ color: "#f5a623", fontWeight: 900, fontSize: "24px" }}>{"Ghc " + total}</span>
+          </div>
+        </div>
+
+        {paying && (
+          <div style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "16px", padding: "20px", marginBottom: "16px", textAlign: "center" }}>
+            <div style={{ fontSize: "36px", marginBottom: "8px" }}>⏳</div>
+            <div style={{ color: "#f5a623", fontWeight: 700, fontSize: "15px", marginBottom: "4px" }}>Processing Payment...</div>
+            <div style={{ color: "#aaa", fontSize: "12px" }}>Minting your NFT ticket on Polygon</div>
+          </div>
+        )}
+
+        <button onClick={onPay} disabled={paying} style={{ ...btn, opacity: paying ? 0.6 : 1 }}>
+          {paying ? "Processing..." : checkoutEvent.price === 0 ? "Get Free Ticket" : "Pay Ghc " + total}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export function TicketView() {
-  const viewingTicket = useStore((s) => s.viewingTicket);
-  const setScreen = useStore((s) => s.setScreen);
-  const setActiveTab = useStore((s) => s.setActiveTab);
-  const setResaleTicket = useStore((s) => s.setResaleTicket);
-  const setResalePrice = useStore((s) => s.setResalePrice);
-  const setResaleError = useStore((s) => s.setResaleError);
-  const setTransferTicket = useStore((s) => s.setTransferTicket);
-  const setTransferEmail = useStore((s) => s.setTransferEmail);
-  const setTransferName = useStore((s) => s.setTransferName);
-  const setTransferDone = useStore((s) => s.setTransferDone);
-
+  const viewingTicket = useStore(s => s.viewingTicket);
+  const setScreen = useStore(s => s.setScreen);
+  const setActiveTab = useStore(s => s.setActiveTab);
+  const setResaleTicket = useStore(s => s.setResaleTicket);
+  const setResalePrice = useStore(s => s.setResalePrice);
+  const setResaleError = useStore(s => s.setResaleError);
+  const setTransferTicket = useStore(s => s.setTransferTicket);
+  const setTransferEmail = useStore(s => s.setTransferEmail);
+  const setTransferName = useStore(s => s.setTransferName);
+  const setTransferDone = useStore(s => s.setTransferDone);
   const [qrLoaded, setQrLoaded] = useState(false);
   const [qrError, setQrError] = useState(false);
 
   if (!viewingTicket) return null;
-
   const ev = viewingTicket.event;
 
   const formatTime = (t) => {
@@ -27,10 +172,10 @@ export function TicketView() {
   const qrSrc = viewingTicket.qr_base64
     ? "data:image/png;base64," + viewingTicket.qr_base64
     : viewingTicket.qr_image
-    ? viewingTicket.qr_image.startsWith("http")
-      ? viewingTicket.qr_image
-      : API + viewingTicket.qr_image
-    : null;
+      ? (viewingTicket.qr_image.startsWith("http")
+        ? viewingTicket.qr_image
+        : API + viewingTicket.qr_image)
+      : null;
 
   const polygonscanUrl = viewingTicket.nft_tx_hash
     ? "https://polygonscan.com/tx/" + viewingTicket.nft_tx_hash
@@ -38,146 +183,108 @@ export function TicketView() {
 
   return (
     <div style={{ background: BG, minHeight: "100%", paddingBottom: "40px" }}>
-      
-      {/* HEADER */}
       <div style={{ height: "220px", position: "relative" }}>
-        {ev?.image ? (
-          <img
-            src={ev.image}
-            alt={ev.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #f5a623, #e8920f)" }} />
-        )}
-
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.8) 100%)",
-          }}
-        />
-
+        {ev.image
+          ? <img src={ev.image} alt={ev.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          : <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #f5a623, #e8920f)" }} />
+        }
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.8) 100%)" }} />
         <div style={{ position: "absolute", top: "16px", left: "16px" }}>
-          <BackBtn
-            onClick={() => {
-              setScreen("app");
-              setActiveTab("tickets");
-            }}
-          />
+          <BackBtn onClick={() => { setScreen("app"); setActiveTab("tickets"); }} />
         </div>
-
         <div style={{ position: "absolute", bottom: "20px", left: "20px" }}>
-          <div
-            style={{
-              color: "rgba(255,255,255,0.7)",
-              fontSize: "11px",
-              fontWeight: 600,
-              letterSpacing: "2px",
-              marginBottom: "4px",
-            }}
-          >
-            YOUR TICKET
-          </div>
-          <div style={{ color: "#fff", fontSize: "22px", fontWeight: 800 }}>
-            {ev?.name}
-          </div>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "11px", fontWeight: 600, letterSpacing: "2px", marginBottom: "4px" }}>YOUR TICKET</div>
+          <div style={{ color: "#fff", fontSize: "22px", fontWeight: 800 }}>{ev.name}</div>
         </div>
       </div>
 
-      {/* BODY */}
-      <div
-        style={{
-          background: "#fff",
-          margin: "16px",
-          borderRadius: "24px",
-          overflow: "hidden",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.1)",
-        }}
-      >
-        {/* INFO */}
-        <div
-          style={{
-            padding: "20px",
-            display: "flex",
-            justifyContent: "space-around",
-            borderBottom: "1px dashed #f0f0f0",
-          }}
-        >
+      <div style={{ background: "#fff", margin: "16px", borderRadius: "24px", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
+        <div style={{ padding: "20px", display: "flex", justifyContent: "space-around", borderBottom: "1px dashed #f0f0f0" }}>
           {[
-            ["📅 DATE", ev?.date || "TBA"],
-            ["🕐 TIME", formatTime(ev?.time)],
-            ["💺 QTY", viewingTicket.qty || 1],
+            ["DATE", ev.date || "TBA"],
+            ["TIME", formatTime(ev.time || viewingTicket.event?.time)],
+            ["QTY", viewingTicket.qty || 1],
           ].map(([k, v]) => (
             <div key={k} style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontSize: "10px",
-                  color: "#bbb",
-                  fontWeight: 600,
-                  marginBottom: "6px",
-                }}
-              >
-                {k}
-              </div>
-              <div style={{ fontWeight: 800 }}>{v}</div>
+              <div style={{ fontSize: "10px", color: "#bbb", fontWeight: 600, marginBottom: "6px", letterSpacing: "1px" }}>{k}</div>
+              <div style={{ fontWeight: 800, fontSize: "15px", color: "#1a1a1a" }}>{v}</div>
             </div>
           ))}
         </div>
 
-        {/* QR */}
-        <div
-          style={{
-            padding: "24px 20px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "14px",
-          }}
-        >
+        <div style={{ padding: "24px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px" }}>
           {qrSrc ? (
-            <img
-              src={qrSrc}
-              alt="QR Code"
-              onLoad={() => setQrLoaded(true)}
-              onError={() => setQrError(true)}
-              style={{
-                width: "200px",
-                height: "200px",
-                borderRadius: "16px",
-                border: "3px solid #f5a623",
-              }}
-            />
+            <div style={{ position: "relative" }}>
+              {!qrLoaded && !qrError && (
+                <div className="skeleton" style={{ width: "200px", height: "200px", borderRadius: "16px", position: "absolute", top: 0, left: 0 }} />
+              )}
+              <img
+                src={qrSrc}
+                alt="QR Code"
+                onLoad={() => setQrLoaded(true)}
+                onError={() => setQrError(true)}
+                style={{ width: "200px", height: "200px", borderRadius: "16px", border: "3px solid #f5a623", padding: "6px", background: "#fff", display: qrError ? "none" : "block", boxShadow: "0 4px 20px rgba(245,166,35,0.2)" }}
+              />
+              {qrError && (
+                <div style={{ width: "200px", height: "200px", borderRadius: "16px", background: "#f8f8f6", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "2px dashed #f0f0f0", gap: "8px" }}>
+                  <span style={{ fontSize: "40px" }}>📱</span>
+                  <span style={{ fontSize: "12px", color: "#aaa" }}>QR unavailable</span>
+                </div>
+              )}
+            </div>
           ) : (
-            <div>No QR</div>
+            <div style={{ width: "200px", height: "200px", borderRadius: "16px", background: "#f8f8f6", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "2px dashed #f0f0f0", gap: "10px" }}>
+              <span style={{ fontSize: "48px" }}>📱</span>
+              <span style={{ fontSize: "12px", color: "#aaa" }}>No QR available</span>
+            </div>
           )}
 
-          {/* ✅ FIXED POLYGON LINK */}
+          <div style={{ background: "#f8f8f6", padding: "8px 16px", borderRadius: "20px" }}>
+            <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#aaa", letterSpacing: "1px" }}>{viewingTicket.id}</span>
+          </div>
+
           {polygonscanUrl ? (
             <a
               href={polygonscanUrl}
               target="_blank"
               rel="noreferrer"
-              style={{
-                background: "rgba(39,174,96,0.08)",
-                border: "1px solid rgba(39,174,96,0.2)",
-                padding: "8px 20px",
-                borderRadius: "20px",
-                textDecoration: "none",
-              }}
+              style={{ background: "rgba(39,174,96,0.08)", border: "1px solid rgba(39,174,96,0.2)", padding: "8px 20px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "6px", textDecoration: "none" }}
             >
-              View on Polygonscan
+              <span style={{ color: "#27ae60", fontSize: "14px" }}>✓</span>
+              <span style={{ color: "#27ae60", fontSize: "12px", fontWeight: 700 }}>View on Polygonscan</span>
             </a>
           ) : (
-            <div>Verified on Polygon</div>
+            <div style={{ background: "rgba(39,174,96,0.08)", border: "1px solid rgba(39,174,96,0.2)", padding: "8px 20px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ color: "#27ae60", fontSize: "14px" }}>✓</span>
+              <span style={{ color: "#27ae60", fontSize: "12px", fontWeight: 700 }}>Verified on Polygon Blockchain</span>
+            </div>
           )}
+        </div>
+
+        <div style={{ padding: "0 16px 16px", display: "flex", gap: "10px" }}>
+          <button
+            onClick={() => { setResaleTicket(viewingTicket); setResalePrice(""); setResaleError(""); setScreen("resale"); }}
+            style={{ flex: 1, padding: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", borderRadius: "14px", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}>
+            Resell
+          </button>
+          <button
+            onClick={() => { setTransferTicket(viewingTicket); setTransferEmail(""); setTransferName(""); setTransferDone(false); setScreen("transfer"); }}
+            style={{ flex: 1, padding: "14px", background: "#f8f8f6", color: "#6b6b6b", border: "1.5px solid #f0f0f0", borderRadius: "14px", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}>
+            Transfer
+          </button>
+        </div>
+        <div style={{ padding: "0 16px 20px" }}>
+          <button
+            onClick={() => { setScreen("app"); setActiveTab("home"); }}
+            style={{ width: "100%", padding: "14px", background: "rgba(39,174,96,0.08)", border: "1.5px solid rgba(39,174,96,0.25)", color: "#27ae60", borderRadius: "14px", fontWeight: 700, cursor: "pointer", fontSize: "14px" }}>
+            Done
+          </button>
         </div>
       </div>
     </div>
   );
 }
+
 export function Resale() {
   const resaleTicket = useStore(s => s.resaleTicket);
   const resalePrice = useStore(s => s.resalePrice);
@@ -218,7 +325,7 @@ export function Resale() {
             placeholder={"Max: Ghc " + (ev.price - 1)}
             style={{ ...input, fontSize: "22px", fontWeight: 800, border: "2px solid " + (resaleError ? "#e74c3c" : "#f5a623") }}
           />
-          {resaleError && <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "-4px" }}>{"⚠️ " + resaleError}</div>}
+          {resaleError && <div style={{ color: "#e74c3c", fontSize: "12px", marginTop: "-4px" }}>{"Error: " + resaleError}</div>}
         </div>
         {price > 0 && (
           <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
@@ -324,7 +431,7 @@ export function Transfer() {
           <div style={{ fontSize: "12px", color: "#aaa" }}>Make sure the email address is correct before confirming.</div>
         </div>
         <button onClick={onTransfer} disabled={transferring} style={{ ...btn, background: "linear-gradient(135deg, #2980b9, #1a6fa8)", opacity: transferring ? 0.6 : 1 }}>
-          {transferring ? "⏳ Transferring..." : "📤 Confirm Transfer"}
+          {transferring ? "Transferring..." : "Confirm Transfer"}
         </button>
       </div>
     </div>
