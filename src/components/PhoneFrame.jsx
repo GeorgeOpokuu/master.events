@@ -12,6 +12,7 @@ function AboutPage({ onNavigate }) {
         </div>
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
           <span onClick={() => onNavigate("home")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>Home</span>
+          <span onClick={() => onNavigate("about")} style={{ color: "#f5a623", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>About</span>
           <span onClick={() => onNavigate("login")} style={{ color: "#1a1a1a", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>Log in</span>
           <span onClick={() => onNavigate("signup")} style={{ padding: "10px 22px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "12px", fontWeight: 700, fontSize: "14px", cursor: "pointer" }}>Sign up free</span>
         </div>
@@ -23,7 +24,6 @@ function AboutPage({ onNavigate }) {
           <h1 style={{ fontSize: "42px", fontWeight: 900, color: "#1a1a1a", marginBottom: "16px", letterSpacing: "-1px" }}>About Master Events</h1>
           <p style={{ fontSize: "18px", color: "#6b6b6b", lineHeight: 1.7 }}>Ghana's first blockchain-powered event ticketing platform, built to eliminate fake tickets and empower event organizers.</p>
         </div>
-
         {[
           { icon: "🎯", title: "Our Mission", body: "We believe every event experience should start with trust. Master Events uses blockchain technology to ensure every ticket is authentic, verifiable, and owned by the rightful buyer." },
           { icon: "⛓️", title: "Blockchain Technology", body: "Every ticket purchased on Master Events is minted as an NFT on the Polygon blockchain — the same technology used by major global platforms, now available in Ghana." },
@@ -39,7 +39,6 @@ function AboutPage({ onNavigate }) {
             </div>
           </div>
         ))}
-
         <div style={{ textAlign: "center", marginTop: "48px" }}>
           <div style={{ fontSize: "16px", color: "#6b6b6b", marginBottom: "20px" }}>Have questions? Reach us at</div>
           <a href="mailto:mastereventgh@gmail.com" style={{ color: "#f5a623", fontWeight: 700, fontSize: "18px", textDecoration: "none" }}>mastereventgh@gmail.com</a>
@@ -49,7 +48,7 @@ function AboutPage({ onNavigate }) {
   );
 }
 
-// ── Login Page (Desktop wrapper) ────────────────────────────
+// ── Desktop Auth Page ───────────────────────────────────────
 function DesktopAuthPage({ type, onNavigate }) {
   const setScreen = useStore(s => s.setScreen);
 
@@ -65,7 +64,9 @@ function DesktopAuthPage({ type, onNavigate }) {
           <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎟️</div>
           <span style={{ fontWeight: 800, fontSize: "18px", color: "#1a1a1a" }}>Master Events</span>
         </div>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+          <span onClick={() => onNavigate("home")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>Home</span>
+          <span onClick={() => onNavigate("about")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>About</span>
           <span onClick={() => onNavigate("login")} style={{ color: type === "login" ? "#f5a623" : "#6b6b6b", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>Log in</span>
           <span onClick={() => onNavigate("signup")} style={{ padding: "10px 22px", background: type === "signup" ? "linear-gradient(135deg, #f5a623, #e8920f)" : "#f8f8f6", color: type === "signup" ? "#fff" : "#6b6b6b", borderRadius: "12px", fontWeight: 700, fontSize: "14px", cursor: "pointer", border: "1.5px solid #f0f0f0" }}>Sign up</span>
         </div>
@@ -73,9 +74,8 @@ function DesktopAuthPage({ type, onNavigate }) {
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px" }}>
         <div style={{ display: "flex", gap: "60px", alignItems: "center", maxWidth: "1000px", width: "100%" }}>
-          {/* Left side info */}
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>🇬🇭 MASTER EVENTS GHANA</div>
+            <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>MASTER EVENTS GHANA</div>
             <h1 style={{ fontSize: "40px", fontWeight: 900, color: "#1a1a1a", marginBottom: "16px", lineHeight: 1.2, letterSpacing: "-0.5px" }}>
               {type === "login" ? "Welcome back!" : "Join Ghana's #1 ticketing platform"}
             </h1>
@@ -95,13 +95,10 @@ function DesktopAuthPage({ type, onNavigate }) {
             ))}
           </div>
 
-          {/* Right side - phone frame with app */}
           <div style={{ flexShrink: 0 }}>
             <div style={{ width: "320px", height: "620px", background: "#1a1a1a", borderRadius: "44px", padding: "12px", boxShadow: "0 0 0 2px #555, 0 0 0 8px #1a1a1a, 0 0 0 10px #444, 0 40px 80px rgba(0,0,0,0.4)", overflow: "hidden", position: "relative" }}>
               <div style={{ width: "100%", height: "100%", borderRadius: "34px", overflow: "hidden", background: "#f8f8f6" }}>
-                {/* Notch */}
                 <div style={{ position: "absolute", top: "12px", left: "50%", transform: "translateX(-50%)", width: "100px", height: "24px", background: "#1a1a1a", borderRadius: "0 0 16px 16px", zIndex: 10 }} />
-                {/* App content inside phone */}
                 <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
                   <iframe
                     src={window.location.href}
@@ -112,9 +109,10 @@ function DesktopAuthPage({ type, onNavigate }) {
               </div>
             </div>
             <div style={{ textAlign: "center", marginTop: "16px" }}>
-              <button onClick={() => handleEnterApp(type === "login" ? "login" : "signup")}
+              <button
+                onClick={() => handleEnterApp(type === "login" ? "login" : "signup")}
                 style={{ padding: "12px 32px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "15px", cursor: "pointer", boxShadow: "0 6px 20px rgba(245,166,35,0.3)" }}>
-                {type === "login" ? "Open Login →" : "Open Signup →"}
+                {type === "login" ? "Open Login" : "Open Signup"}
               </button>
             </div>
           </div>
@@ -148,7 +146,7 @@ function LandingPage({ onNavigate }) {
   return (
     <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", color: "#1a1a1a" }}>
 
-      {/* Nav */}
+      {/* ✅ Nav - text links only, no hamburger */}
       <nav style={{ background: "#fff", borderBottom: "1px solid #f0f0f0", padding: "0 60px", display: "flex", justifyContent: "space-between", alignItems: "center", height: "64px", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎟️</div>
@@ -157,8 +155,8 @@ function LandingPage({ onNavigate }) {
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
           <a href="#events" style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>Events</a>
           <a href="#organizers" style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500 }}>Organizers</a>
-          <span onClick={() => onNavigate("about")} style={{ color: "#6b6b6b", textDecoration: "none", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>About</span>
-          <span onClick={() => onNavigate("login")} style={{ color: "#1a1a1a", textDecoration: "none", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>Log in</span>
+          <span onClick={() => onNavigate("about")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>About</span>
+          <span onClick={() => onNavigate("login")} style={{ color: "#1a1a1a", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>Log in</span>
           <span onClick={() => onNavigate("signup")} style={{ padding: "10px 22px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "12px", fontWeight: 700, fontSize: "14px", boxShadow: "0 4px 12px rgba(245,166,35,0.3)", cursor: "pointer" }}>Sign up free</span>
         </div>
       </nav>
@@ -166,7 +164,7 @@ function LandingPage({ onNavigate }) {
       {/* Hero */}
       <div style={{ background: "linear-gradient(135deg, #fff8f0 0%, #fff 100%)", padding: "80px 60px 60px", textAlign: "center", borderBottom: "1px solid #f0f0f0" }}>
         <div style={{ display: "inline-block", background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "50px", padding: "6px 18px", fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "24px" }}>
-          🇬🇭 GHANA'S PREMIER TICKETING PLATFORM
+          GHANA'S PREMIER TICKETING PLATFORM
         </div>
         <h1 style={{ fontSize: "56px", fontWeight: 900, lineHeight: 1.1, marginBottom: "20px", letterSpacing: "-1px" }}>
           Find events that<br />
@@ -175,12 +173,13 @@ function LandingPage({ onNavigate }) {
         <p style={{ fontSize: "18px", color: "#6b6b6b", maxWidth: "480px", margin: "0 auto 40px", lineHeight: 1.6 }}>
           Discover and buy tickets to the best events in Ghana. Every ticket is an NFT — unfakeable and yours forever.
         </p>
+        {/* ✅ Hero buttons - text only, no emoji icons */}
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
           <a href="#events" style={{ padding: "16px 36px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", borderRadius: "14px", textDecoration: "none", fontWeight: 700, fontSize: "16px", boxShadow: "0 8px 24px rgba(245,166,35,0.35)" }}>
-            🎟️ Browse Events
+            Browse Events
           </a>
           <span onClick={() => onNavigate("signup")} style={{ padding: "16px 36px", background: "#fff", border: "1.5px solid #f0f0f0", color: "#1a1a1a", borderRadius: "14px", fontWeight: 700, fontSize: "16px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)", cursor: "pointer" }}>
-            🎪 Create Event
+            Create Event
           </span>
         </div>
 
@@ -195,14 +194,14 @@ function LandingPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Events grid */}
+      {/* ✅ Events grid - 4 per row */}
       <div id="events" style={{ padding: "60px 60px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
           <div>
             <h2 style={{ fontSize: "32px", fontWeight: 800, letterSpacing: "-0.5px", marginBottom: "6px" }}>Upcoming Events</h2>
             <p style={{ color: "#aaa", fontSize: "15px" }}>Discover what's happening across Ghana</p>
           </div>
-          <span onClick={() => onNavigate("signup")} style={{ color: "#f5a623", fontWeight: 700, fontSize: "14px", cursor: "pointer" }}>See all →</span>
+          <span onClick={() => onNavigate("signup")} style={{ color: "#f5a623", fontWeight: 700, fontSize: "14px", cursor: "pointer" }}>See all</span>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px" }}>
@@ -226,10 +225,14 @@ function LandingPage({ onNavigate }) {
                 {ev ? (
                   <>
                     <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "6px", lineHeight: 1.3 }}>{ev.name}</div>
-                    <div style={{ fontSize: "12px", color: "#aaa", marginBottom: "10px" }}>📅 {ev.date} · 📍 {ev.venue}</div>
+                    <div style={{ fontSize: "12px", color: "#aaa", marginBottom: "10px" }}>{"📅 " + ev.date + " · 📍 " + ev.venue}</div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontWeight: 800, color: "#f5a623", fontSize: "15px" }}>{parseFloat(ev.price) === 0 ? "FREE" : `Ghc ${ev.price}`}</span>
-                      <button onClick={e => { e.stopPropagation(); onNavigate("signup"); }} style={{ padding: "6px 14px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "8px", fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>Get Tickets</button>
+                      <span style={{ fontWeight: 800, color: "#f5a623", fontSize: "15px" }}>{parseFloat(ev.price) === 0 ? "FREE" : "Ghc " + ev.price}</span>
+                      <button
+                        onClick={e => { e.stopPropagation(); onNavigate("signup"); }}
+                        style={{ padding: "6px 14px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "8px", fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>
+                        Get Tickets
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -248,7 +251,7 @@ function LandingPage({ onNavigate }) {
       {/* Organizer CTA */}
       <div id="organizers" style={{ margin: "0 60px 60px", background: "linear-gradient(135deg, #fff8f0, #fff)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "24px", padding: "60px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 24px rgba(245,166,35,0.08)" }}>
         <div style={{ maxWidth: "520px" }}>
-          <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>🎪 FOR ORGANIZERS</div>
+          <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>FOR ORGANIZERS</div>
           <h2 style={{ fontSize: "36px", fontWeight: 800, marginBottom: "16px", letterSpacing: "-0.5px", lineHeight: 1.2 }}>Ready to host your event?</h2>
           <p style={{ color: "#6b6b6b", fontSize: "16px", lineHeight: 1.7, marginBottom: "28px" }}>
             Create events, sell tickets with blockchain verification, manage door staff, and receive 95% of every sale directly to your MoMo wallet.
@@ -263,9 +266,9 @@ function LandingPage({ onNavigate }) {
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", flexShrink: 0 }}>
-          {[["95%", "Payout to Organizers"], ["⛓️", "NFT Tickets"], ["📱", "MoMo Payments"], ["🔍", "QR Verification"]].map(([icon, label]) => (
+          {[["95%", "Payout to Organizers"], ["NFT", "Blockchain Tickets"], ["MoMo", "Mobile Payments"], ["QR", "Door Verification"]].map(([icon, label]) => (
             <div key={label} style={{ background: "#fff", borderRadius: "16px", padding: "20px 16px", textAlign: "center", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", width: "130px" }}>
-              <div style={{ fontSize: "28px", marginBottom: "8px" }}>{icon}</div>
+              <div style={{ fontSize: "20px", fontWeight: 800, color: "#f5a623", marginBottom: "8px" }}>{icon}</div>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "#6b6b6b", lineHeight: 1.3 }}>{label}</div>
             </div>
           ))}
@@ -273,7 +276,7 @@ function LandingPage({ onNavigate }) {
       </div>
 
       {/* Footer */}
-      <div id="about" style={{ background: "#fff", borderTop: "1px solid #f0f0f0", padding: "32px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ background: "#fff", borderTop: "1px solid #f0f0f0", padding: "32px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>🎟️</div>
           <span style={{ fontWeight: 700, color: "#1a1a1a", fontSize: "14px" }}>Master Events</span>
@@ -289,10 +292,31 @@ function LandingPage({ onNavigate }) {
   );
 }
 
+// ── Desktop App View (4-column events) ─────────────────────
+function DesktopAppView({ children, onNavigate }) {
+  return (
+    <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      <nav style={{ background: "#fff", borderBottom: "1px solid #f0f0f0", padding: "0 60px", display: "flex", justifyContent: "space-between", alignItems: "center", height: "64px", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>🎟️</div>
+          <span style={{ fontWeight: 800, fontSize: "18px", color: "#1a1a1a" }}>Master Events</span>
+        </div>
+        <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+          <span onClick={() => onNavigate("home")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>Home</span>
+          <span onClick={() => onNavigate("about")} style={{ color: "#6b6b6b", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>About</span>
+        </div>
+      </nav>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ── Phone Frame (main export) ────────────────────────────────
 export default function PhoneFrame({ children }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [desktopPage, setDesktopPage] = useState("home"); // home | login | signup | about | app
+  const [desktopPage, setDesktopPage] = useState("home");
   const setScreen = useStore(s => s.setScreen);
 
   useEffect(() => {
@@ -302,20 +326,10 @@ export default function PhoneFrame({ children }) {
   }, []);
 
   const handleNavigate = (page) => {
-    if (page === "app") {
-      setDesktopPage("app");
-    } else if (page === "login") {
-      setDesktopPage("login");
-    } else if (page === "signup") {
-      setDesktopPage("signup");
-    } else if (page === "about") {
-      setDesktopPage("about");
-    } else {
-      setDesktopPage("home");
-    }
+    setDesktopPage(page);
   };
 
-  // ── Mobile: fullscreen app ──────────────────────────────────
+  // ── Mobile ──────────────────────────────────────────────────
   if (isMobile) {
     return (
       <>
@@ -332,7 +346,7 @@ export default function PhoneFrame({ children }) {
     );
   }
 
-  // ── Desktop: landing / auth pages ──────────────────────────
+  // ── Desktop ─────────────────────────────────────────────────
   return (
     <>
       <style>{`
