@@ -36,11 +36,14 @@ export function AttendeeTickets() {
             status: t.status,
             qr_data: t.qr_data,
             qr_base64: t.qr_base64 || null,
+            // ✅ Fix QR URL — always absolute
             qr_image: t.qr_image
-              ? (t.qr_image.startsWith('http')
+              ? (t.qr_image.startsWith("http")
                 ? t.qr_image
-                : `${API}${t.qr_image}`)
+                : API + t.qr_image)
               : null,
+            nft_tx_hash: t.nft_tx_hash || null,
+            nft_token_id: t.nft_token_id || null,
             purchasedAt: t.created_at
               ? new Date(t.created_at).toLocaleDateString()
               : "Recently",
@@ -63,57 +66,60 @@ export function AttendeeTickets() {
   return (
     <div style={{ background: "#f8f8f6", minHeight: "100%", padding: "20px 20px 100px" }}>
       <div style={{ fontWeight: 800, fontSize: "22px", color: "#1a1a1a", marginBottom: "20px", letterSpacing: "-0.3px" }}>My Tickets</div>
-      {myTickets.map(t => (
-        <div key={t.id} style={{ background: "#fff", borderRadius: "20px", marginBottom: "16px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
-          <div style={{ height: "120px", position: "relative" }}>
-            <img src={t.event.image} alt={t.event.name}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              onError={e => { e.target.src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600"; }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.72))" }} />
-            <div style={{ position: "absolute", bottom: "10px", left: "14px", right: "80px" }}>
-              <div style={{ color: "#fff", fontWeight: 800, fontSize: "15px" }}>{t.event.name}</div>
-              <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "11px", marginTop: "2px" }}>{t.event.date} · {t.event.venue}</div>
+      <div className="stagger">
+        {myTickets.map(t => (
+          <div key={t.id} className="event-card"
+            style={{ background: "#fff", borderRadius: "20px", marginBottom: "16px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
+            <div style={{ height: "120px", position: "relative" }}>
+              <img src={t.event.image} alt={t.event.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                onError={e => { e.target.src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600"; }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.72))" }} />
+              <div style={{ position: "absolute", bottom: "10px", left: "14px", right: "80px" }}>
+                <div style={{ color: "#fff", fontWeight: 800, fontSize: "15px" }}>{t.event.name}</div>
+                <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "11px", marginTop: "2px" }}>{t.event.date + " · " + t.event.venue}</div>
+              </div>
+              <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+                {t.status === "resale"   && <div style={{ background: "#e74c3c", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>RESALE</div>}
+                {t.status === "redeemed" && <div style={{ background: "#aaa",    color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>USED</div>}
+                {t.status === "active"   && <div style={{ background: "#27ae60", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>ACTIVE</div>}
+              </div>
             </div>
-            <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-              {t.status === "resale" && <div style={{ background: "#e74c3c", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>RESALE</div>}
-              {t.status === "redeemed" && <div style={{ background: "#aaa", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>USED</div>}
-              {t.status === "active" && <div style={{ background: "#27ae60", color: "#fff", fontSize: "10px", fontWeight: 700, padding: "4px 10px", borderRadius: "20px" }}>ACTIVE</div>}
+            <div style={{ padding: "14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <span style={{ color: "#bbb", fontSize: "11px", fontFamily: "monospace", letterSpacing: "1px" }}>
+                  {t.id?.toString().substring(0, 16)}
+                </span>
+                <span style={{ color: "#f5a623", fontWeight: 700, fontSize: "13px" }}>{"Qty: " + t.qty}</span>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button onClick={() => { setViewingTicket(t); setScreen("ticketView"); }}
+                  style={{ flex: 1, padding: "11px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
+                  View
+                </button>
+                {t.status === "active" && (
+                  <button onClick={() => { setResaleTicket(t); setResalePrice(""); setResaleError(""); setScreen("resale"); }}
+                    style={{ flex: 1, padding: "11px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
+                    Resell
+                  </button>
+                )}
+                {t.status === "resale" && (
+                  <button onClick={() => handleCancelResale(t.id)}
+                    style={{ flex: 1, padding: "11px", background: "#fff5f5", color: "#e74c3c", border: "1px solid #ffd6d6", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
+                    Cancel
+                  </button>
+                )}
+                {t.status === "active" && (
+                  <button onClick={() => { setTransferTicket(t); setTransferEmail(""); setTransferName(""); setTransferDone(false); setScreen("transfer"); }}
+                    style={{ flex: 1, padding: "11px", background: "#f8f8f6", color: "#6b6b6b", border: "1px solid #f0f0f0", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
+                    Send
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-          <div style={{ padding: "14px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ color: "#bbb", fontSize: "11px", fontFamily: "monospace", letterSpacing: "1px" }}>
-                {t.id?.toString().substring(0, 16)}
-              </span>
-              <span style={{ color: "#f5a623", fontWeight: 700, fontSize: "13px" }}>Qty: {t.qty}</span>
-            </div>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button onClick={() => { setViewingTicket(t); setScreen("ticketView"); }}
-                style={{ flex: 1, padding: "11px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
-                🎟️ View
-              </button>
-              {t.status === "active" && (
-                <button onClick={() => { setResaleTicket(t); setResalePrice(""); setResaleError(""); setScreen("resale"); }}
-                  style={{ flex: 1, padding: "11px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
-                  🏷️ Resell
-                </button>
-              )}
-              {t.status === "resale" && (
-                <button onClick={() => handleCancelResale(t.id)}
-                  style={{ flex: 1, padding: "11px", background: "#fff5f5", color: "#e74c3c", border: "1px solid #ffd6d6", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
-                  Cancel
-                </button>
-              )}
-              {t.status === "active" && (
-                <button onClick={() => { setTransferTicket(t); setTransferEmail(""); setTransferName(""); setTransferDone(false); setScreen("transfer"); }}
-                  style={{ flex: 1, padding: "11px", background: "#f8f8f6", color: "#6b6b6b", border: "1px solid #f0f0f0", borderRadius: "12px", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}>
-                  📤 Send
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
@@ -125,7 +131,7 @@ export function AttendeeAlerts() {
     icon: t.status === "redeemed" ? "✅" : t.status === "resale" ? "🏷️" : "🎟️",
     color: t.status === "redeemed" ? "#27ae60" : t.status === "resale" ? "#f5a623" : "#5dade2",
     title: t.status === "redeemed" ? "Ticket Used" : t.status === "resale" ? "Listed for Resale" : "Ticket Purchased",
-    body: `Your ticket for ${t.event?.name} on ${t.event?.date}.`,
+    body: "Your ticket for " + t.event?.name + " on " + t.event?.date + ".",
     time: t.purchasedAt || "Recently",
   })) : [
     { icon: "🔔", color: "#f5a623", title: "No alerts yet", body: "Buy a ticket and your alerts will appear here.", time: "Now" }
@@ -134,16 +140,19 @@ export function AttendeeAlerts() {
   return (
     <div style={{ background: "#f8f8f6", minHeight: "100%", padding: "20px 20px 100px" }}>
       <div style={{ fontWeight: 800, fontSize: "22px", color: "#1a1a1a", marginBottom: "20px", letterSpacing: "-0.3px" }}>Alerts</div>
-      {alerts.map((a, i) => (
-        <div key={i} style={{ background: "#fff", borderRadius: "16px", padding: "16px", marginBottom: "12px", display: "flex", gap: "14px", alignItems: "flex-start", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
-          <div style={{ width: "46px", height: "46px", borderRadius: "14px", background: a.color + "15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", flexShrink: 0 }}>{a.icon}</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "4px" }}>{a.title}</div>
-            <div style={{ fontSize: "13px", color: "#6b6b6b", lineHeight: 1.6, marginBottom: "6px" }}>{a.body}</div>
-            <div style={{ fontSize: "11px", color: "#bbb" }}>{a.time}</div>
+      <div className="stagger">
+        {alerts.map((a, i) => (
+          <div key={i} className="fade-in"
+            style={{ background: "#fff", borderRadius: "16px", padding: "16px", marginBottom: "12px", display: "flex", gap: "14px", alignItems: "flex-start", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
+            <div style={{ width: "46px", height: "46px", borderRadius: "14px", background: a.color + "15", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "22px", flexShrink: 0 }}>{a.icon}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "4px" }}>{a.title}</div>
+              <div style={{ fontSize: "13px", color: "#6b6b6b", lineHeight: 1.6, marginBottom: "6px" }}>{a.body}</div>
+              <div style={{ fontSize: "11px", color: "#bbb" }}>{a.time}</div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

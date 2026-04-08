@@ -3,7 +3,6 @@ import useStore from "../../store/useStore";
 
 const BG = "#f8f8f6";
 const CARD = "#ffffff";
-const BORDER = "#f0f0f0";
 const API = "https://master-events-backend.onrender.com";
 
 const input = {
@@ -25,16 +24,9 @@ const btn = {
 
 function BackBtn({ onClick }) {
   return (
-    <div
-      onClick={onClick}
-      style={{
-        width: "38px", height: "38px", borderRadius: "12px",
-        background: "#fff", display: "flex", alignItems: "center",
-        justifyContent: "center", cursor: "pointer", fontSize: "18px",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.08)", color: "#1a1a1a", flexShrink: 0,
-      }}
-    >
-      {"\u2190"}
+    <div onClick={onClick}
+      style={{ width: "38px", height: "38px", borderRadius: "12px", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "18px", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", color: "#1a1a1a", flexShrink: 0 }}>
+      ←
     </div>
   );
 }
@@ -89,21 +81,17 @@ export function Checkout() {
           <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "14px" }}>Quantity</div>
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             <button onClick={() => setTicketQty(Math.max(1, ticketQty - 1))}
-              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>
-              -
-            </button>
+              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>-</button>
             <span style={{ fontSize: "28px", fontWeight: 900, color: "#1a1a1a", minWidth: "40px", textAlign: "center" }}>{ticketQty}</span>
             <button onClick={() => setTicketQty(Math.min(10, ticketQty + 1))}
-              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>
-              +
-            </button>
+              style={{ width: "44px", height: "44px", borderRadius: "14px", background: "#f8f8f6", color: "#f5a623", border: "1.5px solid #f5a623", fontSize: "22px", fontWeight: 700, cursor: "pointer" }}>+</button>
           </div>
         </div>
 
         <div style={{ background: CARD, borderRadius: "20px", padding: "18px", marginBottom: "14px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
           <div style={{ fontWeight: 700, fontSize: "14px", color: "#1a1a1a", marginBottom: "14px" }}>Payment Method</div>
           <div style={{ display: "flex", gap: "10px" }}>
-            {[["momo", "📱 MoMo"], ["visa", "💳 VISA"]].map(([id, label]) => (
+            {[["momo", "MoMo"], ["visa", "VISA"]].map(([id, label]) => (
               <button key={id} onClick={() => setPayMethod(id)} style={{
                 flex: 1, padding: "14px", borderRadius: "14px", cursor: "pointer",
                 fontWeight: 700, fontSize: "14px",
@@ -164,10 +152,7 @@ export function TicketView() {
   if (!viewingTicket) return null;
   const ev = viewingTicket.event;
 
-  const formatTime = (t) => {
-    if (!t) return "TBA";
-    return t.substring(0, 5);
-  };
+  const formatTime = (t) => { if (!t) return "TBA"; return t.substring(0, 5); };
 
   const qrSrc = viewingTicket.qr_base64
     ? "data:image/png;base64," + viewingTicket.qr_base64
@@ -182,8 +167,11 @@ export function TicketView() {
     : null;
 
   return (
-    <div style={{ background: BG, minHeight: "100%", paddingBottom: "40px" }}>
-      <div style={{ height: "220px", position: "relative" }}>
+    // ✅ Fix scroll — overflowY auto on outer, single back button
+    <div style={{ background: BG, height: "100%", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+
+      {/* Hero — ✅ single back button only */}
+      <div style={{ height: "220px", position: "relative", flexShrink: 0 }}>
         {ev.image
           ? <img src={ev.image} alt={ev.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           : <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, #f5a623, #e8920f)" }} />
@@ -198,12 +186,13 @@ export function TicketView() {
         </div>
       </div>
 
-      <div style={{ background: "#fff", margin: "16px", borderRadius: "24px", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.1)" }}>
+      {/* Ticket card */}
+      <div style={{ background: "#fff", margin: "16px", borderRadius: "24px", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.1)", flexShrink: 0, marginBottom: "100px" }}>
         <div style={{ padding: "20px", display: "flex", justifyContent: "space-around", borderBottom: "1px dashed #f0f0f0" }}>
           {[
             ["DATE", ev.date || "TBA"],
             ["TIME", formatTime(ev.time || viewingTicket.event?.time)],
-            ["QTY", viewingTicket.qty || 1],
+            ["QTY",  viewingTicket.qty || 1],
           ].map(([k, v]) => (
             <div key={k} style={{ textAlign: "center" }}>
               <div style={{ fontSize: "10px", color: "#bbb", fontWeight: 600, marginBottom: "6px", letterSpacing: "1px" }}>{k}</div>
@@ -240,16 +229,14 @@ export function TicketView() {
           )}
 
           <div style={{ background: "#f8f8f6", padding: "8px 16px", borderRadius: "20px" }}>
-            <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#aaa", letterSpacing: "1px" }}>{viewingTicket.id}</span>
+            <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#aaa", letterSpacing: "1px" }}>
+              {viewingTicket.id}
+            </span>
           </div>
 
           {polygonscanUrl ? (
-            <a
-              href={polygonscanUrl}
-              target="_blank"
-              rel="noreferrer"
-              style={{ background: "rgba(39,174,96,0.08)", border: "1px solid rgba(39,174,96,0.2)", padding: "8px 20px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "6px", textDecoration: "none" }}
-            >
+            <a href={polygonscanUrl} target="_blank" rel="noreferrer"
+              style={{ background: "rgba(39,174,96,0.08)", border: "1px solid rgba(39,174,96,0.2)", padding: "8px 20px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "6px", textDecoration: "none" }}>
               <span style={{ color: "#27ae60", fontSize: "14px" }}>✓</span>
               <span style={{ color: "#27ae60", fontSize: "12px", fontWeight: 700 }}>View on Polygonscan</span>
             </a>
@@ -430,7 +417,8 @@ export function Transfer() {
           <div style={{ fontSize: "12px", color: "#e74c3c", fontWeight: 700, marginBottom: "4px" }}>This cannot be undone</div>
           <div style={{ fontSize: "12px", color: "#aaa" }}>Make sure the email address is correct before confirming.</div>
         </div>
-        <button onClick={onTransfer} disabled={transferring} style={{ ...btn, background: "linear-gradient(135deg, #2980b9, #1a6fa8)", opacity: transferring ? 0.6 : 1 }}>
+        <button onClick={onTransfer} disabled={transferring}
+          style={{ ...btn, background: "linear-gradient(135deg, #2980b9, #1a6fa8)", opacity: transferring ? 0.6 : 1 }}>
           {transferring ? "Transferring..." : "Confirm Transfer"}
         </button>
       </div>
