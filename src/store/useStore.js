@@ -2,11 +2,11 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { DEMO_ORG_EVENTS } from "../constants/data";
 
-// Keep backend alive - ping every 14 minutes
-setInterval(() => {
-  fetch('https://master-events-backend.onrender.com/api/events/')
-    .catch(() => {});
-}, 840000);
+// ── Keep Render backend alive — ping every 5 minutes ─────────
+const BACKEND = "https://master-events-backend.onrender.com";
+const ping = () => fetch(BACKEND + "/api/events/").catch(() => {});
+ping(); // immediate ping on app load
+setInterval(ping, 5 * 60 * 1000); // then every 5 mins
 
 const useStore = create((set, get) => ({
   // ── Navigation ──────────────────────────────────────────────
@@ -26,6 +26,7 @@ const useStore = create((set, get) => ({
   fullName: "",
   signupEmail: "",
   signupPassword: "",
+  signupError: "",
   setEmail: (email) => set({ email }),
   setPassword: (password) => set({ password }),
   setFullName: (fullName) => set({ fullName }),
@@ -34,7 +35,7 @@ const useStore = create((set, get) => ({
   setSignupData: (signupData) => set({ signupData }),
 
   handleLogin: async () => {
-    const { authAPI } = await import('../api');
+    const { authAPI } = await import("../api");
     const { email, password } = get();
     set({ loginError: "" });
     try {
@@ -52,7 +53,7 @@ const useStore = create((set, get) => ({
           isLoggedIn: true,
           loginError: "",
         });
-        toast.success(`Welcome back, ${user.first_name}! 👋`);
+        toast.success("Welcome back, " + user.first_name + "!");
         if (user.role === "organizer") {
           set({ orgEvents: DEMO_ORG_EVENTS.map(e => ({ ...e })) });
         }
@@ -65,7 +66,7 @@ const useStore = create((set, get) => ({
   },
 
   handleSignup: async () => {
-    const { authAPI } = await import('../api');
+    const { authAPI } = await import("../api");
     const { fullName, signupEmail, signupPassword, signupData } = get();
     const nameParts = fullName.trim().split(" ");
     const first_name = nameParts[0] || "";
@@ -95,8 +96,9 @@ const useStore = create((set, get) => ({
           screen: "app",
           activeTab: firstTab,
           isLoggedIn: true,
+          signupError: "",
         });
-        toast.success(`Welcome to Master Events, ${user.first_name}! 🎉`);
+        toast.success("Welcome to Master Events, " + user.first_name + "!");
       } else {
         set({ signupError: data.email?.[0] || data.password?.[0] || "Registration failed" });
       }
@@ -151,7 +153,7 @@ const useStore = create((set, get) => ({
   setViewingTicket: (viewingTicket) => set({ viewingTicket }),
 
   handleBuyTicket: async () => {
-    const { ticketsAPI } = await import('../api');
+    const { ticketsAPI } = await import("../api");
     const { checkoutEvent, ticketQty, payMethod, myTickets } = get();
     const loadingToast = toast.loading("Processing payment...");
     try {
@@ -168,11 +170,16 @@ const useStore = create((set, get) => ({
           qty: ticketQty,
           payMethod,
           purchasedAt: new Date().toLocaleDateString(),
-          owner: data.owner?.first_name + " " + data.owner?.last_name,
+          owner: (data.owner?.first_name || "") + " " + (data.owner?.last_name || ""),
           ownerEmail: data.owner?.email,
           status: "active",
           qr_data: data.qr_data,
-          qr_base64: data.qr_base64,
+          qr_base64: data.qr_base64 || null,
+          qr_image: data.qr_image
+            ? (data.qr_image.startsWith("http") ? data.qr_image : BACKEND + data.qr_image)
+            : null,
+          nft_tx_hash: data.nft_tx_hash || null,
+          nft_token_id: data.nft_token_id || null,
         };
         set({
           myTickets: [...myTickets, ticket],
@@ -183,7 +190,7 @@ const useStore = create((set, get) => ({
           viewingTicket: ticket,
         });
         toast.dismiss(loadingToast);
-        toast.success("🎟️ Ticket purchased! NFT minting on Polygon...");
+        toast.success("Ticket purchased! NFT minting on Polygon...");
       } else {
         toast.dismiss(loadingToast);
         toast.error(data.error || "Purchase failed. Try again.");
@@ -207,14 +214,14 @@ const useStore = create((set, get) => ({
     const price = parseFloat(resalePrice);
     const orig = resaleTicket.event.price;
     if (!price || isNaN(price)) { set({ resaleError: "Please enter a valid price." }); return; }
-    if (price >= orig) { set({ resaleError: `Must be less than original price (Ghc ${orig}).` }); return; }
-    if (price < orig * 0.3) { set({ resaleError: `Minimum resale price: Ghc ${Math.floor(orig * 0.3)}.` }); return; }
+    if (price >= orig) { set({ resaleError: "Must be less than original price (Ghc " + orig + ")." }); return; }
+    if (price < orig * 0.3) { set({ resaleError: "Minimum resale price: Ghc " + Math.floor(orig * 0.3) + "." }); return; }
     set({
       myTickets: myTickets.map(t => t.id === resaleTicket.id ? { ...t, status: "resale", resalePrice: price } : t),
       resaleListings: [...resaleListings, { ...resaleTicket, resalePrice: price, listedAt: new Date().toLocaleDateString(), seller: currentUser?.first_name }],
       resaleTicket: null, resalePrice: "", resaleError: "", screen: "resaleSuccess",
     });
-    toast.success("🏷️ Ticket listed for resale!");
+    toast.success("Ticket listed for resale!");
   },
 
   handleCancelResale: (ticketId) => {
@@ -237,7 +244,7 @@ const useStore = create((set, get) => ({
   setTransferDone: (transferDone) => set({ transferDone }),
 
   handleTransfer: async () => {
-    const { ticketsAPI } = await import('../api');
+    const { ticketsAPI } = await import("../api");
     const { transferEmail, transferTicket, myTickets } = get();
     if (!transferEmail) { toast.error("Please enter recipient email."); return; }
     const loadingToast = toast.loading("Transferring ticket...");
@@ -252,7 +259,7 @@ const useStore = create((set, get) => ({
           transferDone: true,
         });
         toast.dismiss(loadingToast);
-        toast.success("✅ Ticket transferred successfully!");
+        toast.success("Ticket transferred successfully!");
       } else {
         toast.dismiss(loadingToast);
         toast.error(data.error || "Transfer failed.");
@@ -272,7 +279,7 @@ const useStore = create((set, get) => ({
   setAddEventForm: (addEventForm) => set({ addEventForm }),
 
   handleAddEvent: async () => {
-    const { eventsAPI } = await import('../api');
+    const { eventsAPI } = await import("../api");
     const { addEventForm, orgEvents } = get();
     if (!addEventForm.name || !addEventForm.date || !addEventForm.price) {
       toast.error("Please fill Event Name, Date and Price");
@@ -290,25 +297,36 @@ const useStore = create((set, get) => ({
         time: addEventForm.time || "20:00:00",
         price: addEventForm.price,
         total_tickets: addEventForm.totalTickets || 100,
+        image: addEventForm.image || "",
       });
       if (data.id) {
+        const categoryImages = {
+          music: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600",
+          tech: "https://images.unsplash.com/photo-1488229297570-58520851e868?w=600",
+          food: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600",
+          arts: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600",
+          sports: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600",
+          business: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600",
+          other: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600",
+        };
         set({
           orgEvents: [...orgEvents, {
             id: data.id,
             name: data.name,
             date: data.date,
             venue: data.venue,
+            category: data.category || addEventForm.category || "other",
             price: parseFloat(data.price),
             totalTickets: data.total_tickets,
-            ticketsSold: data.tickets_sold,
+            ticketsSold: data.tickets_sold || 0,
             salesOpen: data.sales_open,
-            color: "#f5a623",
+            image: data.image || addEventForm.image || categoryImages[addEventForm.category] || categoryImages.other,
           }],
           addEventForm: { name: "", subtitle: "", date: "", time: "", venue: "", price: "", description: "" },
           screen: "app", activeTab: "events",
         });
         toast.dismiss(loadingToast);
-        toast.success("🎪 Event created successfully!");
+        toast.success("Event created successfully!");
       } else {
         toast.dismiss(loadingToast);
         toast.error(data.error || "Failed to create event.");
@@ -320,14 +338,14 @@ const useStore = create((set, get) => ({
   },
 
   toggleSales: async (eventId) => {
-    const { eventsAPI } = await import('../api');
-    const { orgEvents, viewingOrgEvent } = get();
+    const { eventsAPI } = await import("../api");
+    const { orgEvents } = get();
     try {
       const data = await eventsAPI.toggleSales(eventId);
       const updated = orgEvents.map(e => e.id === eventId ? { ...e, salesOpen: data.sales_open } : e);
       const updatedEvent = updated.find(e => e.id === eventId);
       set({ orgEvents: updated, viewingOrgEvent: updatedEvent });
-      toast.success(data.sales_open ? "✅ Ticket sales resumed!" : "⏸ Ticket sales paused");
+      toast.success(data.sales_open ? "Ticket sales resumed!" : "Ticket sales paused");
     } catch (e) {
       const updated = orgEvents.map(e => e.id === eventId ? { ...e, salesOpen: !e.salesOpen } : e);
       set({ orgEvents: updated });
@@ -343,7 +361,7 @@ const useStore = create((set, get) => ({
   setDoorCodeError: (doorCodeError) => set({ doorCodeError }),
 
   generateDoorCode: async (eventId, eventName) => {
-    const { ticketsAPI } = await import('../api');
+    const { ticketsAPI } = await import("../api");
     const loadingToast = toast.loading("Generating code...");
     try {
       const data = await ticketsAPI.generateDoorCode(eventId);
@@ -356,12 +374,12 @@ const useStore = create((set, get) => ({
           },
         }));
         toast.dismiss(loadingToast);
-        toast.success(`Code generated: ${data.code}`);
+        toast.success("Code generated: " + data.code);
       }
     } catch (e) {
       const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
       const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-      const code = `DOOR-${rand}`;
+      const code = "DOOR-" + rand;
       const invite = { code, eventId, eventName, used: false, createdAt: new Date().toLocaleTimeString() };
       set(state => ({
         doorStaffInvites: {
@@ -370,12 +388,12 @@ const useStore = create((set, get) => ({
         },
       }));
       toast.dismiss(loadingToast);
-      toast.success(`Code generated: ${code}`);
+      toast.success("Code generated: " + code);
     }
   },
 
   handleDoorStaffLogin: async () => {
-    const { ticketsAPI } = await import('../api');
+    const { ticketsAPI } = await import("../api");
     const { doorCode, doorStaffInvites } = get();
     const trimmed = doorCode.trim().toUpperCase();
     try {
@@ -387,7 +405,7 @@ const useStore = create((set, get) => ({
           screen: "doorStaffScan",
           doorCodeError: "",
         });
-        toast.success(`Access granted: ${data.event_name}`);
+        toast.success("Access granted: " + data.event_name);
         return;
       }
     } catch (e) {}
@@ -435,6 +453,7 @@ const useStore = create((set, get) => ({
     }
     set(updates);
   },
+
 }));
 
 export default useStore;
