@@ -26,7 +26,6 @@ function NavBar({ onNavigate, active }) {
   );
 }
 
-// ── Decorative Phone ────────────────────────────────────────
 function DecorativePhone() {
   return (
     <div style={{ position: "relative", flexShrink: 0 }}>
@@ -62,7 +61,6 @@ function DecorativePhone() {
   );
 }
 
-// ── About Page ──────────────────────────────────────────────
 function AboutPage({ onNavigate }) {
   return (
     <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
@@ -97,36 +95,24 @@ function AboutPage({ onNavigate }) {
   );
 }
 
-// ── Auth Pages ──────────────────────────────────────────────
 function DesktopAuthPage({ type, onNavigate }) {
   const setScreen = useStore(s => s.setScreen);
-
-  const handleEnterApp = (screen) => {
-    setScreen(screen);
-    onNavigate("app");
-  };
+  const handleEnterApp = (screen) => { setScreen(screen); onNavigate("app"); };
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", display: "flex", flexDirection: "column" }}>
       <NavBar onNavigate={onNavigate} active={type} />
-
-      {/* Page body */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "60px 40px", gap: "60px" }}>
-
-        {/* Left — decorative phone, aesthetic only */}
         <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: "24px", alignItems: "flex-start" }}>
           <DecorativePhone />
           <div style={{ maxWidth: "240px" }}>
             <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "10px" }}>MASTER EVENTS GHANA</div>
             <div style={{ fontSize: "15px", color: "#6b6b6b", lineHeight: 1.7 }}>
-              {type === "login"
-                ? "Your tickets and events are waiting. Log back in."
-                : "Buy, sell and transfer blockchain-verified event tickets."}
+              {type === "login" ? "Your tickets and events are waiting. Log back in." : "Buy, sell and transfer blockchain-verified event tickets."}
             </div>
           </div>
         </div>
 
-        {/* Center — compact auth form card */}
         <div style={{ background: "#fff", borderRadius: "24px", padding: "48px 44px", width: "400px", boxShadow: "0 8px 48px rgba(0,0,0,0.1)", border: "1px solid #f0f0f0", flexShrink: 0 }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <div style={{ width: "52px", height: "52px", borderRadius: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", margin: "0 auto 14px", boxShadow: "0 6px 16px rgba(245,166,35,0.3)" }}>🎟️</div>
@@ -137,38 +123,26 @@ function DesktopAuthPage({ type, onNavigate }) {
               {type === "login" ? "Log in to Master Events" : "Join Ghana's #1 ticketing platform — it's free"}
             </p>
           </div>
-
-          {/* Feature pills */}
           <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "center", marginBottom: "28px" }}>
             {["NFT Tickets", "MoMo Payments", "Polygon Blockchain"].map(tag => (
               <div key={tag} style={{ padding: "4px 10px", background: "rgba(245,166,35,0.07)", border: "1px solid rgba(245,166,35,0.18)", borderRadius: "20px", fontSize: "11px", fontWeight: 600, color: "#f5a623" }}>{tag}</div>
             ))}
           </div>
-
-          {/* Main CTA */}
-          <button
-            onClick={() => handleEnterApp(type === "login" ? "login" : "signup")}
+          <button onClick={() => handleEnterApp(type === "login" ? "login" : "signup")}
             style={{ width: "100%", padding: "15px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "15px", cursor: "pointer", boxShadow: "0 8px 24px rgba(245,166,35,0.3)", marginBottom: "14px" }}>
             {type === "login" ? "Log In to Master Events" : "Get Started — It's Free"}
           </button>
-
           <div style={{ textAlign: "center", marginBottom: "24px" }}>
-            <span style={{ color: "#aaa", fontSize: "13px" }}>
-              {type === "login" ? "No account yet? " : "Already have an account? "}
-            </span>
+            <span style={{ color: "#aaa", fontSize: "13px" }}>{type === "login" ? "No account yet? " : "Already have an account? "}</span>
             <span onClick={() => onNavigate(type === "login" ? "signup" : "login")} style={{ color: "#f5a623", fontWeight: 700, fontSize: "13px", cursor: "pointer" }}>
               {type === "login" ? "Sign up free" : "Log in"}
             </span>
           </div>
-
-          {/* Divider */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
             <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
             <span style={{ color: "#ccc", fontSize: "11px", whiteSpace: "nowrap" }}>trusted across Ghana</span>
             <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
           </div>
-
-          {/* Stats */}
           <div style={{ display: "flex", justifyContent: "space-around" }}>
             {[["10K+", "Tickets Sold"], ["50+", "Events"], ["0%", "Fake Tickets"]].map(([val, label]) => (
               <div key={label} style={{ textAlign: "center" }}>
@@ -179,7 +153,6 @@ function DesktopAuthPage({ type, onNavigate }) {
           </div>
         </div>
 
-        {/* Right — feature list */}
         <div style={{ maxWidth: "260px", flexShrink: 0 }}>
           <div style={{ fontSize: "12px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>WHY MASTER EVENTS</div>
           {[
@@ -202,10 +175,8 @@ function DesktopAuthPage({ type, onNavigate }) {
   );
 }
 
-// ── Landing Page ────────────────────────────────────────────
 function LandingPage({ onNavigate }) {
   const [events, setEvents] = useState([]);
-
   useEffect(() => {
     fetch("https://master-events-backend.onrender.com/api/events/")
       .then(r => r.json())
@@ -226,8 +197,6 @@ function LandingPage({ onNavigate }) {
   return (
     <div style={{ minHeight: "100vh", background: "#f8f8f6", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", color: "#1a1a1a" }}>
       <NavBar onNavigate={onNavigate} active="home" />
-
-      {/* Hero */}
       <div style={{ background: "linear-gradient(135deg, #fff8f0 0%, #fff 100%)", padding: "80px 60px 60px", textAlign: "center", borderBottom: "1px solid #f0f0f0" }}>
         <div style={{ display: "inline-block", background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.2)", borderRadius: "50px", padding: "6px 18px", fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "24px" }}>
           GHANA'S PREMIER TICKETING PLATFORM
@@ -253,7 +222,6 @@ function LandingPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Events grid */}
       <div id="events" style={{ padding: "60px 60px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
           <div>
@@ -299,7 +267,6 @@ function LandingPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Organizer CTA */}
       <div id="organizers" style={{ margin: "0 60px 60px", background: "linear-gradient(135deg, #fff8f0, #fff)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "24px", padding: "60px", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 24px rgba(245,166,35,0.08)" }}>
         <div style={{ maxWidth: "520px" }}>
           <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "1px", marginBottom: "16px" }}>FOR ORGANIZERS</div>
@@ -320,7 +287,6 @@ function LandingPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Footer */}
       <div style={{ background: "#fff", borderTop: "1px solid #f0f0f0", padding: "32px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>🎟️</div>
@@ -337,7 +303,94 @@ function LandingPage({ onNavigate }) {
   );
 }
 
-// ── Main Export ─────────────────────────────────────────────
+// ── Desktop App Shell ───────────────────────────────────────
+// ✅ KEY FIX: App renders in a centered constrained container, not full width
+function DesktopAppShell({ children, onNavigate }) {
+  return (
+    <div style={{ minHeight: "100vh", background: "#eeecea", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      {/* Top bar */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #f0f0f0", padding: "0 40px", display: "flex", justifyContent: "space-between", alignItems: "center", height: "56px", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
+        <Logo onClick={() => onNavigate("home")} />
+        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+          <span onClick={() => onNavigate("home")} style={{ color: "#6b6b6b", fontSize: "13px", fontWeight: 500, cursor: "pointer" }}>Back to Site</span>
+          <span style={{ fontSize: "12px", color: "#aaa", background: "#f8f8f6", padding: "4px 12px", borderRadius: "20px", border: "1px solid #f0f0f0" }}>Master Events App</span>
+        </div>
+      </div>
+
+      {/* Centered phone-like container */}
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "40px 20px", gap: "32px" }}>
+
+        {/* Left sidebar hint */}
+        <div style={{ width: "200px", flexShrink: 0, paddingTop: "20px" }}>
+          <div style={{ fontSize: "11px", color: "#bbb", fontWeight: 600, letterSpacing: "1px", marginBottom: "16px" }}>QUICK LINKS</div>
+          {[
+            ["🏠", "Home"],
+            ["🎟️", "My Tickets"],
+            ["🔔", "Alerts"],
+            ["💰", "Wallet"],
+          ].map(([icon, label]) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "12px", marginBottom: "4px", cursor: "pointer", color: "#6b6b6b", fontSize: "13px", fontWeight: 500 }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#1a1a1a"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#6b6b6b"; }}>
+              <span style={{ fontSize: "16px" }}>{icon}</span>
+              <span>{label}</span>
+            </div>
+          ))}
+
+          <div style={{ marginTop: "32px", padding: "16px", background: "#fff", borderRadius: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+            <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, marginBottom: "8px" }}>BLOCKCHAIN</div>
+            <div style={{ fontSize: "11px", color: "#aaa", lineHeight: 1.6 }}>Every ticket is an NFT on Polygon. Tap any ticket to view on Polygonscan.</div>
+          </div>
+        </div>
+
+        {/* ✅ App in phone-like container — not stretched */}
+        <div style={{
+          width: "390px",
+          height: "calc(100vh - 136px)",
+          minHeight: "600px",
+          background: "#fff",
+          borderRadius: "28px",
+          overflow: "hidden",
+          boxShadow: "0 8px 48px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06)",
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+        }}>
+          <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column" }}>
+            {children}
+          </div>
+        </div>
+
+        {/* Right sidebar */}
+        <div style={{ width: "200px", flexShrink: 0, paddingTop: "20px" }}>
+          <div style={{ fontSize: "11px", color: "#bbb", fontWeight: 600, letterSpacing: "1px", marginBottom: "16px" }}>PLATFORM INFO</div>
+          {[
+            ["⛓️", "Polygon NFTs"],
+            ["💳", "MoMo & VISA"],
+            ["🔍", "QR Scanning"],
+            ["🔐", "Secure Auth"],
+          ].map(([icon, label]) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", borderRadius: "12px", marginBottom: "4px", color: "#6b6b6b", fontSize: "13px", fontWeight: 500 }}>
+              <span style={{ fontSize: "16px" }}>{icon}</span>
+              <span>{label}</span>
+            </div>
+          ))}
+
+          <div style={{ marginTop: "32px", padding: "16px", background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "16px" }}>
+            <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, marginBottom: "8px" }}>CONTRACT</div>
+            <div style={{ fontSize: "10px", color: "#aaa", lineHeight: 1.6, fontFamily: "monospace", wordBreak: "break-all" }}>0x1adcfc24...e9</div>
+            <a href="https://polygonscan.com/address/0x1adcfc24f14eef27dee4d4a62fb65c8caa6682e9" target="_blank" rel="noreferrer"
+              style={{ display: "block", marginTop: "8px", fontSize: "11px", color: "#f5a623", textDecoration: "none", fontWeight: 600 }}>
+              View on Polygonscan →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function PhoneFrame({ children }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [desktopPage, setDesktopPage] = useState("home");
@@ -379,15 +432,15 @@ export default function PhoneFrame({ children }) {
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
       `}</style>
 
-      {desktopPage === "home" && <LandingPage onNavigate={handleNavigate} />}
+      {desktopPage === "home"  && <LandingPage onNavigate={handleNavigate} />}
       {desktopPage === "about" && <AboutPage onNavigate={handleNavigate} />}
       {(desktopPage === "login" || desktopPage === "signup") && (
         <DesktopAuthPage type={desktopPage} onNavigate={handleNavigate} />
       )}
       {desktopPage === "app" && (
-        <div style={{ width: "100vw", height: "100vh", background: "#f8f8f6", display: "flex", flexDirection: "column" }}>
+        <DesktopAppShell onNavigate={handleNavigate}>
           {children}
-        </div>
+        </DesktopAppShell>
       )}
     </>
   );
