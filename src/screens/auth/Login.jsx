@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import useStore from "../../store/useStore";
 
 const API = "https://master-events-backend.onrender.com";
-const isDesktop = () => window.innerWidth > 768;
 
 function ForgotPassword({ onBack }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail]     = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState("");
+  const [sent, setSent]       = useState(false);
+  const [error, setError]     = useState("");
 
   const handleSend = async () => {
     if (!email) { setError("Please enter your email"); return; }
@@ -26,14 +25,13 @@ function ForgotPassword({ onBack }) {
   };
 
   if (sent) return (
-    <div style={{ minHeight: "100%", background: "#f8f8f6", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 28px" }}>
-      <div style={{ textAlign: "center", maxWidth: "360px" }}>
-        <div style={{ width: "72px", height: "72px", borderRadius: "22px", background: "rgba(39,174,96,0.1)", border: "2px solid rgba(39,174,96,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "36px", margin: "0 auto 20px" }}>📧</div>
-        <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#1a1a1a", marginBottom: "10px" }}>Check your email</h2>
-        <p style={{ color: "#6b6b6b", fontSize: "15px", lineHeight: 1.6, marginBottom: "28px" }}>
-          We sent a password reset link to <strong>{email}</strong>
-        </p>
-        <button onClick={onBack} style={{ padding: "14px 32px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "15px", cursor: "pointer" }}>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 p-6">
+      <div className="text-center max-w-sm">
+        <div className="w-16 h-16 rounded-2xl bg-green-50 border-2 border-green-200 flex items-center justify-center text-3xl mx-auto mb-5">📧</div>
+        <h2 className="text-2xl font-black text-gray-900 mb-3">Check your email</h2>
+        <p className="text-gray-500 text-sm leading-relaxed mb-6">We sent a reset link to <strong>{email}</strong></p>
+        <button onClick={onBack} className="px-8 py-3 rounded-xl font-bold text-white text-sm"
+          style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)" }}>
           Back to Login
         </button>
       </div>
@@ -41,177 +39,199 @@ function ForgotPassword({ onBack }) {
   );
 
   return (
-    <div style={{ minHeight: "100%", background: "#f8f8f6", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 28px" }}>
-      <div style={{ width: "100%", maxWidth: "420px" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "#f5a623", fontSize: "15px", marginBottom: "28px", display: "flex", alignItems: "center", gap: "6px", padding: 0, fontWeight: 600 }}>← Back</button>
-        <div style={{ width: "56px", height: "56px", borderRadius: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "26px", marginBottom: "16px", boxShadow: "0 8px 24px rgba(245,166,35,0.3)" }}>🔐</div>
-        <h1 style={{ color: "#1a1a1a", fontSize: "26px", fontWeight: 800, marginBottom: "6px" }}>Forgot Password?</h1>
-        <p style={{ color: "#aaa", fontSize: "14px", lineHeight: 1.5, marginBottom: "28px" }}>Enter your email and we'll send you a reset link</p>
-        <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b", marginBottom: "8px" }}>Email Address</div>
-        <input placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && handleSend()}
-          style={{ width: "100%", padding: "14px 18px", marginBottom: "14px", background: "#fff", border: "2px solid #f0f0f0", borderRadius: "14px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box", caretColor: "#f5a623" }} />
-        {error && <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: "12px", padding: "12px 16px", marginBottom: "14px", color: "#e74c3c", fontSize: "13px" }}>⚠️ {error}</div>}
-        <button onClick={handleSend} disabled={loading}
-          style={{ width: "100%", padding: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "15px", cursor: "pointer", opacity: loading ? 0.7 : 1 }}>
-          {loading ? "Sending..." : "Send Reset Link"}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 p-6">
+      <div className="w-full max-w-md">
+        <button onClick={onBack} className="flex items-center gap-2 text-amber-500 font-semibold text-sm mb-6 bg-transparent border-none cursor-pointer p-0">
+          ← Back to Login
         </button>
+        <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
+            style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)" }}>🔐</div>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Forgot Password?</h1>
+          <p className="text-gray-400 text-sm mb-6">Enter your email and we'll send a reset link</p>
+          <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+          <input placeholder="you@email.com" value={email} onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleSend()}
+            className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 text-sm outline-none mb-4 bg-gray-50"
+            style={{ caretColor: "#f5a623" }} />
+          {error && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm mb-4">⚠️ {error}</div>}
+          <button onClick={handleSend} disabled={loading}
+            className="w-full py-3.5 rounded-xl font-bold text-white text-sm border-none cursor-pointer"
+            style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", opacity: loading ? 0.7 : 1 }}>
+            {loading ? "Sending..." : "Send Reset Link"}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
 export default function Login() {
-  const email        = useStore(s => s.email);
-  const password     = useStore(s => s.password);
-  const loginError   = useStore(s => s.loginError);
-  const setEmail     = useStore(s => s.setEmail);
-  const setPassword  = useStore(s => s.setPassword);
-  const handleLogin  = useStore(s => s.handleLogin);
-  const setScreen    = useStore(s => s.setScreen);
+  const email       = useStore(s => s.email);
+  const password    = useStore(s => s.password);
+  const loginError  = useStore(s => s.loginError);
+  const setEmail    = useStore(s => s.setEmail);
+  const setPassword = useStore(s => s.setPassword);
+  const handleLogin = useStore(s => s.handleLogin);
+  const setScreen   = useStore(s => s.setScreen);
   const [loading, setLoading]       = useState(false);
   const [showForgot, setShowForgot] = useState(false);
-  const desktop = isDesktop();
 
   const onLogin = async () => { setLoading(true); await handleLogin(); setLoading(false); };
 
   if (showForgot) return <ForgotPassword onBack={() => setShowForgot(false)} />;
 
   return (
-    <div style={{ minHeight: "100%", background: desktop ? "linear-gradient(160deg, #fffcf5 0%, #fff8f0 50%, #fff 100%)" : "#f8f8f6", display: "flex", alignItems: "center", justifyContent: "center", padding: desktop ? "60px 40px" : "0" }}>
+    <div className="min-h-screen grid lg:grid-cols-2 bg-gradient-to-br from-white to-gray-100">
 
-      {/* Desktop — two column */}
-      {desktop ? (
-        <div style={{ display: "flex", gap: "80px", alignItems: "center", maxWidth: "900px", width: "100%" }}>
-          {/* Left branding */}
-          <div style={{ flex: 1 }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "26px", marginBottom: "20px", boxShadow: "0 8px 24px rgba(245,166,35,0.3)" }}>🎟️</div>
-            <div style={{ fontSize: "13px", color: "#f5a623", fontWeight: 700, letterSpacing: "2px", marginBottom: "12px" }}>MASTER EVENTS GHANA</div>
-            <h1 style={{ fontSize: "48px", fontWeight: 900, color: "#1a1a1a", lineHeight: 1.05, marginBottom: "16px", letterSpacing: "-1.5px" }}>
-              Welcome<br /><span style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>back.</span>
-            </h1>
-            <p style={{ color: "#6b6b6b", fontSize: "16px", lineHeight: 1.7, marginBottom: "32px", maxWidth: "340px" }}>
-              Your NFT tickets and events are waiting. Every ticket secured on Polygon blockchain.
-            </p>
-            {[["⛓️", "NFT on Polygon", "Every ticket blockchain-verified"],
-              ["💰", "95% to organizers", "Only 5% platform fee"],
-              ["📱", "MoMo & VISA", "Pay the Ghanaian way"]].map(([icon, title, sub]) => (
-              <div key={title} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px" }}>
-                <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(245,166,35,0.1)", border: "1px solid rgba(245,166,35,0.18)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", flexShrink: 0 }}>{icon}</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: "13px", color: "#1a1a1a" }}>{title}</div>
-                  <div style={{ fontSize: "12px", color: "#aaa" }}>{sub}</div>
-                </div>
+      {/* ── Left — Branding ── */}
+      <div className="hidden lg:flex flex-col justify-center px-16 py-12"
+        style={{ background: "linear-gradient(160deg, #fffcf5 0%, #fff8f0 60%, #fff 100%)" }}>
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-lg"
+          style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)" }}>🎟️</div>
+
+        <div className="text-xs font-bold tracking-widest mb-3" style={{ color: "#f5a623" }}>MASTER EVENTS GHANA</div>
+
+        <h1 className="font-black text-gray-900 leading-none mb-4" style={{ fontSize: "52px", letterSpacing: "-2px" }}>
+          Welcome<br />
+          <span style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            back.
+          </span>
+        </h1>
+
+        <p className="text-gray-500 text-base leading-relaxed mb-10 max-w-sm">
+          Your NFT tickets and events are waiting. Every ticket is secured on Polygon blockchain — yours forever.
+        </p>
+
+        <div className="space-y-4">
+          {[
+            ["⛓️", "NFT on Polygon",     "Every ticket blockchain-verified and unfakeable"],
+            ["💰", "95% to organizers",  "Only 5% platform fee, withdraw via MoMo"],
+            ["📱", "MoMo & VISA",        "Pay the Ghanaian way — mobile money or card"],
+          ].map(([icon, title, sub]) => (
+            <div key={title} className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0 border"
+                style={{ background: "rgba(245,166,35,0.1)", borderColor: "rgba(245,166,35,0.2)" }}>{icon}</div>
+              <div>
+                <div className="font-bold text-sm text-gray-900">{title}</div>
+                <div className="text-xs text-gray-400">{sub}</div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Stats */}
+        <div className="flex gap-8 mt-12">
+          {[["10K+","Tickets Sold"],["50+","Events"],["0%","Fake Tickets"]].map(([val, label]) => (
+            <div key={label}>
+              <div className="text-2xl font-black" style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{val}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Right — Login Form ── */}
+      <div className="flex items-center justify-center px-6 py-12 lg:px-16">
+        <div className="w-full max-w-md">
+
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg"
+              style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)" }}>🎟️</div>
+            <h1 className="text-2xl font-black text-gray-900">Master Events</h1>
+            <p className="text-gray-400 text-xs tracking-widest mt-1">IF NOT NOW, WHEN?</p>
           </div>
 
-          {/* Right — login card */}
-          <div style={{ width: "420px", flexShrink: 0 }}>
-            <div style={{ background: "#fff", borderRadius: "28px", padding: "44px 40px", border: "2px solid #f0ebe0", boxShadow: "0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(245,166,35,0.08)" }}>
-              <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#1a1a1a", marginBottom: "6px", letterSpacing: "-0.3px" }}>Log in</h2>
-              <p style={{ color: "#aaa", fontSize: "14px", marginBottom: "28px" }}>Enter your username and password</p>
+          {/* Card */}
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8">
+            <h2 className="text-2xl font-black text-gray-900 mb-1">Log in</h2>
+            <p className="text-gray-400 text-sm mb-6">Enter your username and password to continue</p>
 
-              <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b", marginBottom: "8px" }}>Username or Email</div>
-              <input placeholder="username or you@email.com" value={email} onChange={e => setEmail(e.target.value)}
-                style={{ width: "100%", padding: "14px 18px", marginBottom: "14px", background: "#fafafa", border: "2px solid #f0f0f0", borderRadius: "14px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box", caretColor: "#f5a623" }} />
+            {/* Username */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                Username or Email
+              </label>
+              <input
+                placeholder="username or you@email.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-100 text-sm outline-none bg-gray-50 transition-all"
+                style={{ caretColor: "#f5a623" }}
+              />
+            </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b" }}>Password</div>
-                <div onClick={() => setShowForgot(true)} style={{ fontSize: "13px", color: "#f5a623", fontWeight: 600, cursor: "pointer" }}>Forgot password?</div>
+            {/* Password */}
+            <div className="mb-5">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Password</label>
+                <span onClick={() => setShowForgot(true)} className="text-xs font-bold cursor-pointer" style={{ color: "#f5a623" }}>
+                  Forgot password?
+                </span>
               </div>
-              <input placeholder="••••••••" type="password" value={password} onChange={e => setPassword(e.target.value)}
+              <input
+                placeholder="••••••••"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && onLogin()}
-                style={{ width: "100%", padding: "14px 18px", marginBottom: "14px", background: "#fafafa", border: "2px solid #f0f0f0", borderRadius: "14px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box", caretColor: "#f5a623" }} />
+                className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-100 text-sm outline-none bg-gray-50 transition-all"
+                style={{ caretColor: "#f5a623" }}
+              />
+            </div>
 
-              {loginError && <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: "12px", padding: "12px 16px", marginBottom: "14px", color: "#e74c3c", fontSize: "13px" }}>⚠️ {loginError}</div>}
-              {loading && (
-                <div style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "12px", padding: "12px", marginBottom: "14px", textAlign: "center" }}>
-                  <div style={{ color: "#f5a623", fontSize: "13px", fontWeight: 600 }}>⏳ Logging in... first load may take ~30s</div>
-                </div>
-              )}
-
-              <button onClick={onLogin} disabled={loading}
-                style={{ width: "100%", padding: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "16px", cursor: "pointer", boxShadow: "0 8px 28px rgba(245,166,35,0.35)", opacity: loading ? 0.7 : 1, marginBottom: "16px" }}>
-                {loading ? "Logging in..." : "Log In →"}
-              </button>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
-                <span style={{ color: "#ccc", fontSize: "12px" }}>or</span>
-                <div style={{ flex: 1, height: "1px", background: "#f0f0f0" }} />
+            {/* Errors */}
+            {loginError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm mb-4">
+                ⚠️ {loginError}
               </div>
-
-              <p style={{ color: "#aaa", fontSize: "13px", textAlign: "center", marginBottom: "8px" }}>
-                No account? <span onClick={() => setScreen("signup")} style={{ color: "#f5a623", fontWeight: 700, cursor: "pointer" }}>Sign up free</span>
-              </p>
-              <p style={{ color: "#bbb", fontSize: "12px", textAlign: "center" }}>
-                Door staff? <span onClick={() => setScreen("doorStaffLogin")} style={{ color: "#6b6b6b", fontWeight: 600, cursor: "pointer" }}>Enter with invite code</span>
-              </p>
-            </div>
-
-            {/* Dev helper */}
-            <div style={{ marginTop: "16px", background: "#fff", border: "1.5px solid #f0f0f0", borderRadius: "16px", padding: "14px 16px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
-              <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOGIN (DEV)</div>
-              <div onClick={() => { setEmail("jude@test.com"); setPassword("test1234"); }}
-                style={{ display: "flex", justifyContent: "space-between", cursor: "pointer", padding: "4px 0" }}>
-                <span style={{ fontSize: "12px", color: "#aaa" }}>jude@test.com / test1234</span>
-                <span style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700 }}>Organizer</span>
+            )}
+            {loading && (
+              <div className="rounded-xl px-4 py-3 text-sm mb-4 text-center border"
+                style={{ background: "rgba(245,166,35,0.06)", borderColor: "rgba(245,166,35,0.2)", color: "#f5a623" }}>
+                ⏳ Logging in... first load may take ~30s
               </div>
+            )}
+
+            {/* Login button */}
+            <button onClick={onLogin} disabled={loading}
+              className="w-full py-4 rounded-xl font-bold text-white text-base border-none cursor-pointer mb-4 transition-all"
+              style={{ background: "linear-gradient(135deg, #f5a623, #e8920f)", boxShadow: "0 8px 28px rgba(245,166,35,0.35)", opacity: loading ? 0.7 : 1 }}>
+              {loading ? "Logging in..." : "Log In →"}
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex-1 h-px bg-gray-100" />
+              <span className="text-gray-300 text-xs">or</span>
+              <div className="flex-1 h-px bg-gray-100" />
             </div>
+
+            <p className="text-center text-sm text-gray-400 mb-2">
+              No account?{" "}
+              <span onClick={() => setScreen("signup")} className="font-bold cursor-pointer" style={{ color: "#f5a623" }}>
+                Sign up free
+              </span>
+            </p>
+            <p className="text-center text-xs text-gray-300">
+              Door staff?{" "}
+              <span onClick={() => setScreen("doorStaffLogin")} className="font-semibold text-gray-400 cursor-pointer">
+                Enter with invite code
+              </span>
+            </p>
           </div>
-        </div>
-      ) : (
-        /* Mobile — clean full screen */
-        <div style={{ width: "100%", minHeight: "100vh", background: "#f8f8f6", padding: "60px 28px 40px", display: "flex", flexDirection: "column" }}>
-          <div style={{ textAlign: "center", marginBottom: "36px" }}>
-            <div style={{ width: "72px", height: "72px", borderRadius: "20px", background: "linear-gradient(135deg, #f5a623, #e8920f)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "36px", margin: "0 auto 16px", boxShadow: "0 8px 24px rgba(245,166,35,0.3)" }}>🎟️</div>
-            <h1 style={{ color: "#1a1a1a", fontSize: "28px", fontWeight: 800, marginBottom: "4px", letterSpacing: "-0.5px" }}>Master Events</h1>
-            <p style={{ color: "#aaa", fontSize: "13px", letterSpacing: "2px", fontWeight: 500 }}>IF NOT NOW, WHEN?</p>
-          </div>
 
-          <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b", marginBottom: "8px" }}>Username or Email</div>
-          <input placeholder="username or you@email.com" value={email} onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "14px 18px", marginBottom: "14px", background: "#fff", border: "2px solid #f0f0f0", borderRadius: "14px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box", caretColor: "#f5a623" }} />
-
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "#6b6b6b" }}>Password</div>
-            <div onClick={() => setShowForgot(true)} style={{ fontSize: "13px", color: "#f5a623", fontWeight: 600, cursor: "pointer" }}>Forgot password?</div>
-          </div>
-          <input placeholder="••••••••" type="password" value={password} onChange={e => setPassword(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && onLogin()}
-            style={{ width: "100%", padding: "14px 18px", marginBottom: "14px", background: "#fff", border: "2px solid #f0f0f0", borderRadius: "14px", fontSize: "15px", color: "#1a1a1a", outline: "none", boxSizing: "border-box", caretColor: "#f5a623" }} />
-
-          {loginError && <div style={{ background: "#fff5f5", border: "1px solid #ffd6d6", borderRadius: "12px", padding: "12px 16px", marginBottom: "14px", color: "#e74c3c", fontSize: "13px" }}>⚠️ {loginError}</div>}
-          {loading && (
-            <div style={{ background: "rgba(245,166,35,0.06)", border: "1px solid rgba(245,166,35,0.15)", borderRadius: "14px", padding: "12px", marginBottom: "14px", textAlign: "center" }}>
-              <div style={{ color: "#f5a623", fontSize: "13px", fontWeight: 600 }}>⏳ Logging in...</div>
-              <div style={{ color: "#aaa", fontSize: "11px", marginTop: "4px" }}>First load may take ~30s</div>
-            </div>
-          )}
-
-          <button onClick={onLogin} disabled={loading}
-            style={{ width: "100%", padding: "16px", background: "linear-gradient(135deg, #f5a623, #e8920f)", color: "#fff", border: "none", borderRadius: "14px", fontWeight: 700, fontSize: "15px", cursor: "pointer", boxShadow: "0 8px 24px rgba(245,166,35,0.28)", opacity: loading ? 0.7 : 1, marginBottom: "12px" }}>
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-
-          <p style={{ color: "#aaa", fontSize: "13px", textAlign: "center", marginBottom: "8px" }}>
-            No account? <span onClick={() => setScreen("signup")} style={{ color: "#f5a623", fontWeight: 700, cursor: "pointer" }}>Sign up free</span>
-          </p>
-          <p style={{ color: "#bbb", fontSize: "12px", textAlign: "center" }}>
-            Door staff? <span onClick={() => setScreen("doorStaffLogin")} style={{ color: "#6b6b6b", fontWeight: 600, cursor: "pointer" }}>Enter with invite code</span>
-          </p>
-
-          <div style={{ marginTop: "32px", background: "#fff", border: "1.5px solid #f0f0f0", borderRadius: "16px", padding: "16px", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
-            <div style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700, marginBottom: "10px", letterSpacing: "1px" }}>⚡ QUICK LOGIN (DEV)</div>
+          {/* Dev quick login */}
+          <div className="mt-4 bg-white rounded-xl border-2 border-gray-100 p-4 shadow-sm">
+            <div className="text-xs font-bold tracking-widest mb-3" style={{ color: "#f5a623" }}>⚡ QUICK LOGIN (DEV)</div>
             <div onClick={() => { setEmail("jude@test.com"); setPassword("test1234"); }}
-              style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", cursor: "pointer" }}>
-              <span style={{ fontSize: "12px", color: "#aaa" }}>jude@test.com / test1234</span>
-              <span style={{ fontSize: "11px", color: "#f5a623", fontWeight: 700 }}>Organizer</span>
+              className="flex justify-between items-center cursor-pointer py-1">
+              <span className="text-xs text-gray-400">jude@test.com / test1234</span>
+              <span className="text-xs font-bold" style={{ color: "#f5a623" }}>Organizer</span>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
