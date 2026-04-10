@@ -45,9 +45,9 @@ export function Signup() {
   ];
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-gradient-to-br from-white to-gray-100">
+    <div className="min-h-fit bg-gradient-to-br from-white to-gray-100 pt-8 px-6">
 
-      {/* ── Left — Branding ── */}
+      {/* ── Left — Branding ── 
       <div className="hidden lg:flex flex-col justify-center px-16 py-12"
         style={{ background: "linear-gradient(160deg, #fffcf5 0%, #fff8f0 60%, #fff 100%)" }}>
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-lg"
@@ -84,9 +84,9 @@ export function Signup() {
           ))}
         </div>
       </div>
-
+      */}
       {/* ── Right — Signup Form ── */}
-      <div className="flex items-center justify-center px-6 py-10 lg:px-16">
+      <div className="flex justify-center px-6 py-2 ">
         <div className="w-full max-w-md">
 
           {/* Mobile logo */}
@@ -98,9 +98,9 @@ export function Signup() {
           </div>
 
           {/* Card */}
-          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8">
-            <h2 className="text-2xl font-black text-gray-900 mb-1">Create your account</h2>
-            <p className="text-gray-400 text-sm mb-6">Join Ghana's #1 blockchain ticketing platform — it's free</p>
+   {/*    <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8"> */}
+            <h2 className="text-center text-5xl font-black text-gray-900 mb-1">SIGNUP</h2>
+            <p className="text-center text-gray-400 text-sm mb-5">Join Ghana's #1 blockchain ticketing platform — it's free</p>
 
             {/* Name + Username row */}
             <div className="grid grid-cols-2 gap-4 mb-4">
@@ -144,7 +144,7 @@ export function Signup() {
                   </div>
                 ))}
               </div>
-            </div>
+        {/*  </div> */}
 
             {/* Role selector */}
             <div className="mb-5">
