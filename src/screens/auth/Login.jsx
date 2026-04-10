@@ -82,9 +82,9 @@ export default function Login() {
   if (showForgot) return <ForgotPassword onBack={() => setShowForgot(false)} />;
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-gradient-to-br from-white to-gray-100">
+    <div className="min-h-screen flex bg-gradient-to-br from-white to-gray-100">
 
-      {/* ── Left — Branding ── */}
+      {/* ── Left — Branding ── 
       <div className="hidden lg:flex flex-col justify-center px-16 py-12"
         style={{ background: "linear-gradient(160deg, #fffcf5 0%, #fff8f0 60%, #fff 100%)" }}>
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-lg"
@@ -120,7 +120,7 @@ export default function Login() {
           ))}
         </div>
 
-        {/* Stats */}
+        {/* Stats 
         <div className="flex gap-8 mt-12">
           {[["10K+","Tickets Sold"],["50+","Events"],["0%","Fake Tickets"]].map(([val, label]) => (
             <div key={label}>
@@ -130,9 +130,9 @@ export default function Login() {
           ))}
         </div>
       </div>
-
+      */}
       {/* ── Right — Login Form ── */}
-      <div className="flex items-center justify-center px-6 py-12 lg:px-16">
+      <div className="flex items-center justify-center px-6 py-12 lg:px-16 w-full">
         <div className="w-full max-w-md">
 
           {/* Mobile logo */}
@@ -144,7 +144,7 @@ export default function Login() {
           </div>
 
           {/* Card */}
-          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8">
+       {/*<div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-8"> */}
             <h2 className="text-2xl font-black text-gray-900 mb-1">Log in</h2>
             <p className="text-gray-400 text-sm mb-6">Enter your username and password to continue</p>
 
@@ -219,7 +219,7 @@ export default function Login() {
                 Enter with invite code
               </span>
             </p>
-          </div>
+        {/*  </div> */}
 
           {/* Dev quick login */}
           <div className="mt-4 bg-white rounded-xl border-2 border-gray-100 p-4 shadow-sm">
